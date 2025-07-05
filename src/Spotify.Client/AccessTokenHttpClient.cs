@@ -4,17 +4,29 @@ using SetlistPlaylistCreator.WebApi.Configuration;
 
 namespace Spotify.Client
 {
-    public class AccessTokenHttpClient : IAccessTokenHttpClient
+    /// <summary>
+    /// The default implementation of <see cref="IAccessTokenHttpClient"/>.
+    /// </summary>
+    public class AccessTokenHttpClient
+        : IAccessTokenHttpClient
     {
-        private readonly Uri _baseAddress = new("https://accounts.spotify.com/api/");
+        private static readonly Uri BaseAddress = new("https://accounts.spotify.com/api/");
 
         private readonly SpotifyOptions _spotifyOptions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessTokenHttpClient"/> class.
+        /// </summary>
+        /// <param name="spotifyOptions">Configuration options related to Spotify.</param>
         public AccessTokenHttpClient(IOptions<SpotifyOptions> spotifyOptions)
         {
+            ArgumentNullException.ThrowIfNull(spotifyOptions, nameof(spotifyOptions));
+
             _spotifyOptions = spotifyOptions.Value;
         }
 
+        /// <inheritdoc />
+        /// <exception cref="Exception">Thrown if the HTTP request was not successful.</exception>
         public async Task<AccessToken> GetAccessTokenAsync()
         {
             using var httpClient = CreateHttpClient();
@@ -42,7 +54,7 @@ namespace Spotify.Client
 
         private HttpClient CreateHttpClient() => new()
         {
-            BaseAddress = _baseAddress
+            BaseAddress = BaseAddress
         };
     }
 }

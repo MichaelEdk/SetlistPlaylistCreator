@@ -3,7 +3,8 @@ using System.Net.Http.Headers;
 
 namespace Spotify.Client
 {
-    public class UserHttpClient : IUserHttpClient
+    public class UserHttpClient
+        : IUserHttpClient
     {
         private readonly Uri _baseAddress = new("https://api.spotify.com/v1/");
 

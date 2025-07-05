@@ -1,21 +1,31 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Web;
 
 namespace Spotify.Client
 {
-    public class SearchHttpClient : ISearchHttpClient
+    /// <summary>
+    /// The default implementation of <see cref="ISearchHttpClient"/>.
+    /// </summary>
+    public class SearchHttpClient
+        : ISearchHttpClient
     {
         private readonly Uri _baseAddress = new("https://api.spotify.com/v1/");
 
         private readonly IAccessTokenHttpClient _accessTokenHttpClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SearchHttpClient"/> class.
+        /// </summary>
+        /// <param name="accessTokenHttpClient">Provides Spotify access tokens.</param>
         public SearchHttpClient(IAccessTokenHttpClient accessTokenHttpClient)
         {
+            ArgumentNullException.ThrowIfNull(accessTokenHttpClient, nameof(accessTokenHttpClient));
+
             _accessTokenHttpClient = accessTokenHttpClient;
         }
 
+        /// <inheritdoc />
+        /// <exception cref="Exception">Thrown if there was an error with the HTTP request.</exception>
         public async Task<SearchResult> SearchSongsAsync(string songTitle, string artistName)
         {
             var token = await _accessTokenHttpClient.GetAccessTokenAsync().ConfigureAwait(false);
