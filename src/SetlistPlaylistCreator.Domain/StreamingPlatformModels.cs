@@ -1,0 +1,10 @@
+﻿namespace SetlistPlaylistCreator.Domain
+{
+    /// <summary>
+    /// Represents a song on a streaming platform, identified by its name, artist, and unique ID.
+    /// </summary>
+    /// <param name="SongName">The name of the song.</param>
+    /// <param name="ArtistName">The name of the song's artist.</param>
+    /// <param name="Id">The streaming platform's unique identifier for the song.</param>
+    public record StreamingPlatformSong(string SongName, string ArtistName, string Id);
+}

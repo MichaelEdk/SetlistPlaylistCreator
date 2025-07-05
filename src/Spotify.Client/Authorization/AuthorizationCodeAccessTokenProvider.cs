@@ -1,0 +1,72 @@
+﻿using Microsoft.Extensions.Options;
+using SetlistPlaylistCreator.WebApi.Configuration;
+
+namespace Spotify.Client.Authorization
+{
+    public class AuthorizationCodeAccessTokenProvider : IAccessTokenProvider
+    {
+        private const string TokenEndpoint = "https://accounts.spotify.com/api/token";
+
+        private readonly IAuthorizationCodeStore _authorizationCodeStore;
+        private readonly ICodeChallengeStore _codeChallengeStore;
+        private readonly SpotifyOptions _spotifyOptions;
+
+        private string _accessToken = string.Empty;
+
+        public AuthorizationCodeAccessTokenProvider(
+            IAuthorizationCodeStore authorizationCodeStore,
+            ICodeChallengeStore codeChallengeStore,
+            IOptionsMonitor<SpotifyOptions> spotifyOptions)
+        {
+            _authorizationCodeStore = authorizationCodeStore;
+            _codeChallengeStore = codeChallengeStore;
+            _spotifyOptions = spotifyOptions.CurrentValue;
+        }
+
+        public async Task<string> GetTokenAsync()
+        {
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                return _accessToken;
+            }
+
+            var code = _authorizationCodeStore.RetrieveCode();
+
+            if (code == null)
+            {
+                return string.Empty;
+            }
+
+            var codeVerifier = _codeChallengeStore.RetrieveChallenge();
+
+            using (var client = new HttpClient())
+            {
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                    new KeyValuePair<string, string>("code", code),
+                    new KeyValuePair<string, string>("redirect_uri", "https://localhost:7009/createplaylist"),
+                    new KeyValuePair<string, string>("client_id", _spotifyOptions.ClientId),
+                    new KeyValuePair<string, string>("code_verifier", codeVerifier),
+                });
+
+                HttpResponseMessage response = await client.PostAsync(TokenEndpoint, content);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Parse the response JSON to get the access token and refresh token
+                    // Assumes the response contains "access_token" and "refresh_token" fields
+                    // You may need to adjust this parsing logic based on the actual response format
+                    dynamic jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+                    _accessToken = jsonResponse?.access_token;
+                    return _accessToken;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+    }
+}
