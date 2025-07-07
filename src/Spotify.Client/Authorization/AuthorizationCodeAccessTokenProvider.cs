@@ -3,6 +3,9 @@ using SetlistPlaylistCreator.WebApi.Configuration;
 
 namespace Spotify.Client.Authorization
 {
+    /// <summary>
+    /// Provides access tokens for Spotify API requests using the OAuth 2.0 authorization code flow with PKCE (Proof Key for Code Exchange).
+    /// </summary>
     public class AuthorizationCodeAccessTokenProvider : IAccessTokenProvider
     {
         private const string TokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -13,6 +16,12 @@ namespace Spotify.Client.Authorization
 
         private string _accessToken = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizationCodeAccessTokenProvider"/> class.
+        /// </summary>
+        /// <param name="authorizationCodeStore">The store for retrieving and storing the authorization code.</param>
+        /// <param name="codeChallengeStore">The store for retrieving and storing the code challenge used for PKCE.</param>
+        /// <param name="spotifyOptions">The options monitor for accessing Spotify configuration values.</param>
         public AuthorizationCodeAccessTokenProvider(
             IAuthorizationCodeStore authorizationCodeStore,
             ICodeChallengeStore codeChallengeStore,
@@ -23,6 +32,7 @@ namespace Spotify.Client.Authorization
             _spotifyOptions = spotifyOptions.CurrentValue;
         }
 
+        /// <inheritdoc />
         public async Task<string> GetTokenAsync()
         {
             if (!string.IsNullOrEmpty(_accessToken))
