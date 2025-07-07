@@ -1,7 +1,5 @@
 ﻿namespace Spotify.Client.Authorization
 {
-    /// <summary>
-    /// Implementation of <see cref="IAuthorizationCodeUrlBuilder"/> that builds the authorization code URL for Spotify's OAuth 2.0 authorization flow.
     /// </summary>
     public class AuthorizationCodeUrlBuilder
         : IAuthorizationCodeUrlBuilder

@@ -12,6 +12,8 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
 
         public ArtistSearchViewModel(ISetlistSearch setlistSearch)
         {
+            ArgumentNullException.ThrowIfNull(setlistSearch, nameof(setlistSearch));
+
             _setlistSearch = setlistSearch;
         }
 

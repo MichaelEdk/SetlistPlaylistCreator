@@ -9,6 +9,9 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
     /// </summary>
     public partial class AuthorizationUserControl : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizationUserControl"/> class.
+        /// </summary>
         public AuthorizationUserControl()
         {
             InitializeComponent();
