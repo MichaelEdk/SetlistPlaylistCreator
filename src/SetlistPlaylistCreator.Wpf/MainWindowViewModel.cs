@@ -3,6 +3,7 @@ using SetlistPlaylistCreator.Wpf.Authorization;
 using SetlistPlaylistCreator.Wpf.Playlist;
 using SetlistPlaylistCreator.Wpf.SongList;
 using Spotify.Client.Authorization;
+using System.IO;
 
 namespace SetlistPlaylistCreator.Wpf
 {
@@ -13,6 +14,11 @@ namespace SetlistPlaylistCreator.Wpf
         private readonly SongListViewModel _songListViewModel;
         private readonly PlaylistViewModel _playlistViewModel;
         private readonly IAuthorizationCodeStore _authorizationCodeStore;
+        private readonly FileSystemWatcher _authorizationCodeFileWatched = new(EncryptedTokenFile.Directory, EncryptedTokenFile.FileName)
+        {
+            EnableRaisingEvents = true,
+            NotifyFilter = NotifyFilters.LastWrite
+        };
 
         public event EventHandler<DataContextChangedEventArgs>? ContextChanged;
 
@@ -54,12 +60,27 @@ namespace SetlistPlaylistCreator.Wpf
                 new DataContextChangedEventArgs(_authorizationViewModel) :
                 new DataContextChangedEventArgs(_artistSearchViewModel);
 
+            _authorizationCodeFileWatched.Changed += FileWatcher_Changed;
+
             ContextChanged?.Invoke(this, initialViewModel);
         }
 
         private void AuthorizationViewModel_AuthorizationComplete(object? sender, EventArgs e)
         {
             ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_artistSearchViewModel));
+        }
+
+        private void FileWatcher_Changed(object? sender, FileSystemEventArgs e)
+        {
+            var authorizationCode = _authorizationCodeStore.RetrieveCode();
+
+            if (!string.IsNullOrWhiteSpace(authorizationCode))
+            {
+                _authorizationCodeFileWatched.Changed -= FileWatcher_Changed;
+
+                _artistSearchViewModel.ArtistSearchTerm = null;
+                ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_artistSearchViewModel));
+            }
         }
     }
 }

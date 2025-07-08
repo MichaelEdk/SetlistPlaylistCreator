@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetlistPlaylistCreator.Wpf"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetlistPlaylistCreator.Service", "SetlistPlaylistCreator.Service\SetlistPlaylistCreator.Service.csproj", "{7414AAFE-9682-4A67-8DD8-16D89B192D4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetlistPlaylistCreator.Wpf.UnitTests", "SetlistPlaylistCreator.Wpf.UnitTests\SetlistPlaylistCreator.Wpf.UnitTests.csproj", "{10D2C606-F636-4BC2-9EE2-2D652F9B176F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{7414AAFE-9682-4A67-8DD8-16D89B192D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7414AAFE-9682-4A67-8DD8-16D89B192D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7414AAFE-9682-4A67-8DD8-16D89B192D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10D2C606-F636-4BC2-9EE2-2D652F9B176F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10D2C606-F636-4BC2-9EE2-2D652F9B176F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10D2C606-F636-4BC2-9EE2-2D652F9B176F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10D2C606-F636-4BC2-9EE2-2D652F9B176F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

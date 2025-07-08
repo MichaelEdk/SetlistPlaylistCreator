@@ -1,13 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using SetlistPlaylistCreator.Wpf.ArtistSearch;
 using SetlistPlaylistCreator.Wpf.Authorization;
-using System.Configuration;
-using System.Data;
-using System.IO;
 using System.Windows;
-using Microsoft.Extensions.Options;
 using Spotify.Client.Authorization;
 using SetlistPlaylistCreator.SetlistPlatform;
 using SetlistPlaylistCreator.SetlistPlatform.SetlistFm;
@@ -31,11 +26,30 @@ namespace SetlistPlaylistCreator.Wpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-           base.OnStartup(e);
+            base.OnStartup(e);
+
+            var args = Environment.GetCommandLineArgs();
+
+            // The first argument is the executable name, so we can ignore it.
+            // The second argument, if present, is the Spotify redirect URI with the authorization token.
+            if (args.Length > 1)
+            {
+                var passthroughServices = new ServiceCollection()
+                    .AddScoped<IAuthorizationCodeStore, DpapiAuthorizationCodeStore>()
+                    .AddScoped<ICommandLineArgumentsParser, CommandLineArgumentsParser>()
+                    .BuildServiceProvider();
+
+                var tokenStore = passthroughServices.GetRequiredService<IAuthorizationCodeStore>();
+                var commandLineArgumentsParser = passthroughServices.GetRequiredService<ICommandLineArgumentsParser>();
+
+                var commandLineArguments = commandLineArgumentsParser.Parse(args);
+
+                tokenStore.StoreCode(commandLineArguments.Token);
+
+                Environment.Exit(0);
+            }
 
             var configuration = new ConfigurationBuilder()
-                //.SetBasePath(Directory.GetCurrentDirectory())
-                //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddUserSecrets<SpotifyOptions>()
                 .AddUserSecrets<SetlistFmOptions>()
                 .Build();
@@ -67,12 +81,11 @@ namespace SetlistPlaylistCreator.Wpf
                .Configure<SpotifyOptions>(configuration.GetSection(SpotifyOptions.Name))
                .BuildServiceProvider();
 
-            var mainWindow = services.GetService<MainWindow>();
-            var mainWindowViewModel = services.GetService<MainWindowViewModel>();
+            var mainWindow = services.GetRequiredService<MainWindow>();
+            var mainWindowViewModel = services.GetRequiredService<MainWindowViewModel>();
             mainWindow.SetMainWindowViewModel(mainWindowViewModel);
             mainWindowViewModel.Initialize();
             mainWindow?.Show();
-
         }
     }
 }
