@@ -30,7 +30,7 @@ namespace SetlistPlaylistCreator.Service
         }
 
         /// <inheritdoc />
-        public async Task<bool> CreatePlaylistAsync(string playlistName, IReadOnlyCollection<StreamingPlatformSong> songs)
+        public async Task<bool> CreatePlaylistAsync(string playlistName, IReadOnlyCollection<StreamingPlatformSong?> songs)
         {
             var playlistSongs = new List<Song>();
 
@@ -46,10 +46,10 @@ namespace SetlistPlaylistCreator.Service
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<StreamingPlatformSong>> CreateProposedPlaylistAsync(Setlist setlist)
+        public async Task<IReadOnlyCollection<SearchedSong>> ProposePlaylistAsync(Setlist setlist)
         {
             var allSongs = setlist.Sets.SelectMany(set => set.Songs);
-            var streamingPlatformSetlist = new List<StreamingPlatformSong>();
+            var streamingPlatformSetlist = new List<SearchedSong>();
 
             foreach (var song in allSongs)
             {
@@ -60,9 +60,8 @@ namespace SetlistPlaylistCreator.Service
                     continue;
                 }
 
-                // Take a punt. In the future, keep track of all songs to display in the UI. Let the user choose.
-                var firstMatch = streamingPlatformSongs.First();
-                streamingPlatformSetlist.Add(new StreamingPlatformSong(firstMatch.Title, firstMatch.Artist.Name, firstMatch.Id));
+                var allMatches = streamingPlatformSongs.Select(streamingPlatformSong => new StreamingPlatformSong(streamingPlatformSong.Title, streamingPlatformSong.Artist.Name, streamingPlatformSong.Id)).ToList();
+                streamingPlatformSetlist.Add(new SearchedSong(allMatches.First(), allMatches, song.Name, song.ArtistName));
             }
 
             return streamingPlatformSetlist;

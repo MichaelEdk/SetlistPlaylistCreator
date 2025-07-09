@@ -12,7 +12,7 @@ namespace SetlistPlaylistCreator.Service
         /// </summary>
         /// <param name="setlist">The setlist.</param>
         /// <returns>A collection of songs known to the streaming platform.</returns>
-        Task<IReadOnlyCollection<StreamingPlatformSong>> CreateProposedPlaylistAsync(Setlist setlist);
+        Task<IReadOnlyCollection<SearchedSong>> ProposePlaylistAsync(Setlist setlist);
 
         /// <summary>
         /// Creates a playlist in the streaming platform with the given songs.

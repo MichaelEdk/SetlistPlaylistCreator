@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf.Playlist"
+             xmlns:designersupport="clr-namespace:SetlistPlaylistCreator.Wpf.Playlist.DesignerSupport"
+             xmlns:windows="clr-namespace:SetlistPlaylistCreator.Wpf.Windows"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:PlaylistViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance designersupport:DesignTimePlaylistViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="800">
 
@@ -20,6 +22,18 @@
             <Setter Property="MinWidth" Value="120"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Margin" Value="0,0,12,0"/>
+        </Style>
+        <Style x:Key="SetlistButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="AntiqueWhite"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
     </UserControl.Resources>
 
@@ -60,10 +74,12 @@
                 Background="#FAFAFA"
                 CornerRadius="4"
                 Padding="12">
-                    <ListView ItemsSource="{Binding Playlist}"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView
+                        ItemsSource="{Binding PlaylistRowViewModel}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalContentAlignment="Stretch"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="White"
@@ -72,14 +88,75 @@
                         Margin="0,0,0,8"
                         BorderBrush="#DDD"
                         BorderThickness="1">
-                                    <StackPanel>
-                                        <TextBlock FontWeight="SemiBold"
-                               FontSize="14"
-                               Text="{Binding SongName}"/>
-                                        <TextBlock FontSize="12"
-                               Foreground="Gray"
-                               Text="{Binding ArtistName}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       FontSize="14"
+                                                       Text="{Binding SelectedSong.SongName}"/>
+                                            <TextBlock FontSize="12"
+                                                       Foreground="Gray"
+                                                       Text="{Binding SelectedSong.ArtistName}"/>
+                                        </StackPanel>
+                                        <Button
+                                            Content="Edit"
+                                            ToolTip="Select a different song from the search results"
+                                            Grid.Column="1"
+                                            Style="{StaticResource SetlistButtonStyle}"
+                                            Command="{Binding EditSongChoice}"
+                                            CommandParameter="{Binding}">
+                                        </Button>
+                                        <Popup
+                                            IsOpen="{Binding IsPopupVisible}"
+                                            Placement="Center">
+                                            <Border
+                                                Background="White"
+                                                CornerRadius="2"
+                                                Padding="8"
+                                                Margin="0,0,0,8"
+                                                BorderBrush="#DDD"
+                                                BorderThickness="1">
+                                                <ListView
+                                                    ItemsSource="{Binding SearchedSong.AllMatches}"
+                                                    Background="#FAFAFA"
+                                                    Name="SearchResultsListView">
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <StackPanel Grid.Column="0">
+                                                                    <TextBlock
+                                                                        FontWeight="SemiBold"
+                                                                        FontSize="14"
+                                                                        Text="{Binding SongName}"
+                                                                        TextWrapping="WrapWithOverflow"/>
+                                                                    <TextBlock
+                                                                        FontSize="12"
+                                                                        Foreground="Gray"
+                                                                        Text="{Binding ArtistName}"
+                                                                        TextWrapping="WrapWithOverflow"/>
+                                                                </StackPanel>
+                                                                <Button
+                                                                    Content="Select"
+                                                                    Grid.Column="1"
+                                                                    Style="{StaticResource SetlistButtonStyle}"
+                                                                    Margin="3"
+                                                                    Command="{Binding DataContext.SelectSongPopup, ElementName=SearchResultsListView}"
+                                                                    CommandParameter="{Binding}">
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </Border>
+                                        </Popup>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </ListView.ItemTemplate>
