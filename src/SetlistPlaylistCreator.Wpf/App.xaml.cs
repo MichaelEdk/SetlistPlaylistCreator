@@ -46,6 +46,9 @@ namespace SetlistPlaylistCreator.Wpf
 
                 tokenStore.StoreCode(commandLineArguments.Token);
 
+                // Once the authorization code is written, exit the application.
+                // There's a file system watcher that should notify the existing application that
+                // it's time to move onto the next stage.
                 Environment.Exit(0);
             }
 

@@ -2,30 +2,54 @@
 using SetlistPlaylistCreator.WebApi.Configuration;
 using Spotify.Client.Authorization;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 
 namespace SetlistPlaylistCreator.Wpf.Authorization
 {
-    public class AuthorizationViewModel : ViewModelBase
+    /// <summary>
+    /// A view model to back the AuthorizationUserControl view.
+    /// </summary>
+    public class AuthorizationViewModel
+        : ViewModelBase
     {
+        private readonly FileSystemWatcher _authorizationCodeFileWatcher = new(EncryptedTokenFile.Directory, EncryptedTokenFile.FileName)
+        {
+            NotifyFilter = NotifyFilters.LastWrite
+        };
+
+        private readonly IAuthorizationCodeStore _authorizationCodeStore;
         private readonly IAuthorizationCodeUrlBuilder _authorizationCodeUrlBuilder;
         private readonly SpotifyOptions _secrets;
 
-        private Uri _authorizationCodeUrl;
         private string _authorizationButtonText = "Authorize with Spotify";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizationViewModel"/> class.
+        /// </summary>
+        /// <param name="authorizationCodeUrlBuilder">Component used to build Spotify authorization URLs.</param>
+        /// <param name="authorizationCodeStore">A store for keeping the authorization code used to generate Spotify access tokens.</param>
+        /// <param name="secrets">Spotify secret configuration.</param>
         public AuthorizationViewModel(
             IAuthorizationCodeUrlBuilder authorizationCodeUrlBuilder,
+            IAuthorizationCodeStore authorizationCodeStore,
             IOptions<SpotifyOptions> secrets)
         {
             ArgumentNullException.ThrowIfNull(authorizationCodeUrlBuilder, nameof(authorizationCodeUrlBuilder));
+            ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
             ArgumentNullException.ThrowIfNull(secrets, nameof(secrets));
 
             _authorizationCodeUrlBuilder = authorizationCodeUrlBuilder;
+            _authorizationCodeStore = authorizationCodeStore;
             _secrets = secrets.Value;
+
+            _authorizationCodeFileWatcher.Changed += FileWatcher_Changed;
         }
 
-        public event EventHandler AuthorizationComplete;
+        /// <summary>
+        /// An event raised to signal that the authorization process is complete.
+        /// </summary>
+        public event EventHandler? AuthorizationComplete;
 
         /// <summary>
         /// Gets or sets the text on the authorization button.
@@ -41,7 +65,20 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
         /// </summary>
         public ICommand Authorize => new RelayCommand<string>(_ => InitializeAuthorizationProcess());
 
-        public void InitializeAuthorizationProcess()
+        private void FileWatcher_Changed(object? sender, FileSystemEventArgs e)
+        {
+            var authorizationCode = _authorizationCodeStore.RetrieveCode();
+
+            if (!string.IsNullOrWhiteSpace(authorizationCode))
+            {
+                _authorizationCodeFileWatcher.Changed -= FileWatcher_Changed;
+
+                // This should notify consumers that it is time to move to the next window.
+                AuthorizationComplete?.Invoke(this, new EventArgs());
+            }
+        }
+
+        private void InitializeAuthorizationProcess()
         {
             var url = _authorizationCodeUrlBuilder.BuildUri(_secrets.ClientId, _secrets.RedirectAddress);
 
@@ -53,6 +90,8 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
             {
                 UseShellExecute = true
             });
+
+            _authorizationCodeFileWatcher.EnableRaisingEvents = true;
 
             AuthorizationButtonText = "Waiting for authorization...";
         }

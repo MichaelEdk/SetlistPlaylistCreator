@@ -22,6 +22,9 @@ namespace SetlistPlaylistCreator.Service
             IPlatformSearch platformSearch,
             IPlaylistCreator playlistCreator)
         {
+            ArgumentNullException.ThrowIfNull(platformSearch, nameof(platformSearch));
+            ArgumentNullException.ThrowIfNull(playlistCreator, nameof(playlistCreator));
+
             _platformSearch = platformSearch;
             _playlistCreator = playlistCreator;
         }
@@ -51,7 +54,13 @@ namespace SetlistPlaylistCreator.Service
             foreach (var song in allSongs)
             {
                 var streamingPlatformSongs = await _platformSearch.SearchSongsAsync(song.Name, song.ArtistName).ConfigureAwait(false);
-                // Take a punt
+
+                if (!streamingPlatformSongs.Any())
+                {
+                    continue;
+                }
+
+                // Take a punt. In the future, keep track of all songs to display in the UI. Let the user choose.
                 var firstMatch = streamingPlatformSongs.First();
                 streamingPlatformSetlist.Add(new StreamingPlatformSong(firstMatch.Title, firstMatch.Artist.Name, firstMatch.Id));
             }
