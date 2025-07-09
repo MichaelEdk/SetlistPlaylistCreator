@@ -11,11 +11,13 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
     public class DpapiAuthorizationCodeStore
         : IAuthorizationCodeStore
     {
-        private const string FileName = @"Code.dat";
         private readonly byte[] _entropy = [16, 234, 9, 115, 243, 204, 68, 134, 51, 39, 22, 144, 03, 168, 97, 142];
-        private static string CodeFileDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SetlistPlaylistCreator");
 
-        private static string CodeFilePath => Path.Combine(CodeFileDirectory, FileName);
+        /// <inheritdoc />
+        public void ClearStore()
+        {
+            File.Delete(EncryptedTokenFile.FilePath);
+        }
 
         /// <inheritdoc />
         public string? RetrieveCode()

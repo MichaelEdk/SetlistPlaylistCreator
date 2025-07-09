@@ -9,6 +9,12 @@
         private string? _code;
 
         /// <inheritdoc />
+        public void ClearStore()
+        {
+            _code = null;
+        }
+
+        /// <inheritdoc />
         public string? RetrieveCode()
         {
             return _code;

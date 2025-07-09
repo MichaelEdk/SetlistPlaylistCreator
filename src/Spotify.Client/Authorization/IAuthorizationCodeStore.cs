@@ -6,6 +6,11 @@
     public interface IAuthorizationCodeStore
     {
         /// <summary>
+        /// Clears the stored authorization code, effectively removing it from the store.
+        /// </summary>
+        void ClearStore();
+
+        /// <summary>
         /// Retrieves the stored authorization code.
         /// </summary>
         /// <returns>The stored authorization code.</returns>

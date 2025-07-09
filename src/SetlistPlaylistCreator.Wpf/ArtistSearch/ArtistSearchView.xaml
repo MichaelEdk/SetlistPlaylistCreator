@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf.ArtistSearch"
+             xmlns:designersupport="clr-namespace:SetlistPlaylistCreator.Wpf.ArtistSearch.DesignerSupport"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:ArtistSearchViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance designersupport:DesignTimeArtistSearchViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:Name="ArtistSearch">

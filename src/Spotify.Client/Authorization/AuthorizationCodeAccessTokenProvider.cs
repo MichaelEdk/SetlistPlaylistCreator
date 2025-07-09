@@ -65,6 +65,10 @@ namespace Spotify.Client.Authorization
 
                 if (response.IsSuccessStatusCode)
                 {
+                    // Once the authorization code has been used to generate a token successfully, it can't be used again.
+                    // Clear it from the store to prevent reuse.
+                    _authorizationCodeStore.ClearStore();
+
                     // Parse the response JSON to get the access token and refresh token
                     // Assumes the response contains "access_token" and "refresh_token" fields
                     // You may need to adjust this parsing logic based on the actual response format
