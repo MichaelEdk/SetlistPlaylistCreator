@@ -1,5 +1,6 @@
 ﻿using SetlistFm.Client;
 using SetlistPlaylistCreator.Domain;
+using System.Text;
 
 namespace SetlistPlaylistCreator.SetlistPlatform.SetlistFm
 {
@@ -60,9 +61,15 @@ namespace SetlistPlaylistCreator.SetlistPlatform.SetlistFm
                 }
 
                 var setlistArtistName = setlistSearchResult.Artist.Name ?? string.Empty;
+                var setlistNameBuilder = new StringBuilder();
+                setlistNameBuilder.Append(setlistArtistName);
+                if (!string.IsNullOrEmpty(setlistSearchResult.Venue.Name))
+                {
+                    setlistNameBuilder.Append($" in {setlistSearchResult.Venue.Name}");
+                }
 
                 var setlist = new Setlist(
-                    Name: $"{setlistArtistName} in {setlistSearchResult.Venue.Name}",
+                    Name: setlistNameBuilder.ToString(),
                     ArtistName: setlistArtistName,
                     Sets: sets
                 );
