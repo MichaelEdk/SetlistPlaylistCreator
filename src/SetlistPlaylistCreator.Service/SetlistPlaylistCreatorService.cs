@@ -30,14 +30,9 @@ namespace SetlistPlaylistCreator.Service
         }
 
         /// <inheritdoc />
-        public async Task<bool> CreatePlaylistAsync(string playlistName, IReadOnlyCollection<StreamingPlatformSong?> songs)
+        public async Task<bool> CreatePlaylistAsync(string playlistName, IReadOnlyCollection<StreamingPlatformSong> songs)
         {
-            var playlistSongs = new List<Song>();
-
-            foreach (var song in songs)
-            {
-                playlistSongs.Add(new Song(song.SongName, song.Id, new Artist(song.ArtistName)));
-            }
+            var playlistSongs = DomainMapper.Map(songs);
 
             var playlist = new Playlist(playlistName, playlistSongs);
             await _playlistCreator.CreatePlaylistAsync(playlist).ConfigureAwait(false);
@@ -60,7 +55,7 @@ namespace SetlistPlaylistCreator.Service
                     continue;
                 }
 
-                var allMatches = streamingPlatformSongs.Select(streamingPlatformSong => new StreamingPlatformSong(streamingPlatformSong.Title, streamingPlatformSong.Artist.Name, streamingPlatformSong.Id)).ToList();
+                var allMatches = DomainMapper.Map(streamingPlatformSongs);
                 streamingPlatformSetlist.Add(new SearchedSong(allMatches.First(), allMatches, song.Name, song.ArtistName));
             }
 

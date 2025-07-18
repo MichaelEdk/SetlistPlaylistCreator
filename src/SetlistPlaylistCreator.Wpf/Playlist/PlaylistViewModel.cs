@@ -9,9 +9,9 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
     {
         private readonly ISetlistPlaylistCreatorService _setlistPlaylistCreatorService;
 
-        private IReadOnlyCollection<SearchedSong>? _playlist;
-        private string? _setlistName;
-        private IReadOnlyCollection<PlaylistRowViewModel> _playlistRowViewModel;
+        private List<SearchedSong> _playlist = [];
+        private string _setlistName = string.Empty;
+        private List<PlaylistRowViewModel> _playlistRowViewModels = [];
 
         public PlaylistViewModel(ISetlistPlaylistCreatorService setlistPlaylistCreatorService)
         {
@@ -20,23 +20,31 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
             _setlistPlaylistCreatorService = setlistPlaylistCreatorService;
         }
 
-        public IReadOnlyCollection<SearchedSong>? Playlist
+        public List<SearchedSong> Playlist
         {
             get => _playlist;
             set => RaiseAndSetIfChanged(ref _playlist, value, nameof(Playlist));
         }
 
-        public IReadOnlyCollection<PlaylistRowViewModel> PlaylistRowViewModel
+        public List<PlaylistRowViewModel> PlaylistRowViewModels
         { 
-            get => _playlistRowViewModel;
-            set => RaiseAndSetIfChanged(ref _playlistRowViewModel, value, nameof(_playlistRowViewModel));
+            get => _playlistRowViewModels;
+            set => RaiseAndSetIfChanged(ref _playlistRowViewModels, value, nameof(_playlistRowViewModels));
+        }
+
+        private List<StreamingPlatformSong> SelectedSongs
+        {
+            get => PlaylistRowViewModels
+                .Select(song => song.SelectedSong)
+                .OfType<StreamingPlatformSong>() // Filter out nulls
+                .ToList();
         }
 
         public async Task PopulateSetlistAsync(Setlist setlist)
         {
             _setlistName = setlist.Name;
             var searchedSongs = await _setlistPlaylistCreatorService.ProposePlaylistAsync(setlist).ConfigureAwait(false);
-            PlaylistRowViewModel = searchedSongs
+            PlaylistRowViewModels = searchedSongs
                 .Select(song =>
                     new PlaylistRowViewModel()
                     {
@@ -48,15 +56,9 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
                     }).ToList();
         }
 
-
-        public ICommand EditSongChoice => new RelayCommand<PlaylistRowViewModel>(async row =>
-        {
-            
-        });
-
         public ICommand CreatePlaylist => new RelayCommand<object>(async _ =>
         {
-            await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName!, PlaylistRowViewModel!.Select(song => song.SelectedSong).ToList()).ConfigureAwait(false);
+            await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false);
         });
     }
 }

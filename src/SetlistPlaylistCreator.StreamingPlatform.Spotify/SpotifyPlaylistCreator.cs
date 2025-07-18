@@ -24,6 +24,10 @@ namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
             IPlaylistHttpClient playlistClient,
             IUserHttpClient userClient)
         {
+            ArgumentNullException.ThrowIfNull(searchClient, nameof(searchClient));
+            ArgumentNullException.ThrowIfNull(playlistClient, nameof(playlistClient));
+            ArgumentNullException.ThrowIfNull(userClient, nameof(userClient));
+
             _searchClient = searchClient;
             _playlistClient = playlistClient;
             _userClient = userClient;
@@ -45,7 +49,7 @@ namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
                 }
                 else
                 {
-                    var searchResult = await _searchClient.SearchSongsAsync(song.Title, song.Artist.Name);
+                    var searchResult = await _searchClient.SearchSongsAsync(song.Title, song.Artists.First().Name);
                     var track = searchResult.Tracks.Items.FirstOrDefault();
 
                     if (track != null)

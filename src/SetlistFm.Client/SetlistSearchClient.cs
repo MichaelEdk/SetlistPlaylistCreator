@@ -23,6 +23,8 @@ namespace SetlistFm.Client
         public SetlistSearchClient(
             IOptionsMonitor<SetlistFmOptions> setlistFmOptions)
         {
+            ArgumentNullException.ThrowIfNull(setlistFmOptions, nameof(setlistFmOptions));
+            
             _setlistFmOptions = setlistFmOptions.CurrentValue;
         }
 

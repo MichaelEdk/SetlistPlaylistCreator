@@ -21,9 +21,8 @@ namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
 
             foreach (var item in searchResult.Tracks.Items)
             {
-                // TODO: Change artist in Song to collection
                 // Use the URL as the ID.
-                songs.Add(new Song(item.Name, item.Uri, Map(item.Artists.First())));
+                songs.Add(new Song(item.Name, item.Uri, [.. item.Artists.Select(Map)]));
             }
 
             return songs;
