@@ -196,7 +196,7 @@
         /// <summary>
         /// Gets or sets the list of sets.
         /// </summary>
-        public List<SetlistFmSet> Set { get; set; } = new();
+        public List<SetlistFmSet> Set { get; set; } = [];
     }
 
     /// <summary>
@@ -213,7 +213,7 @@
         /// Gets or sets the list of songs in the set.
         /// </summary>
         /// <remarks>The name of the collection in the payload is singular.</remarks>
-        public List<SetlistFmSong> Song { get; set; } = new();
+        public List<SetlistFmSong> Song { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the name of the set.
@@ -249,22 +249,22 @@
         /// <summary>
         /// Gets or sets the artist for the setlist.
         /// </summary>
-        public SetlistFmArtist? Artist { get; set; }
+        public SetlistFmArtist Artist { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the venue for the setlist.
         /// </summary>
-        public SetlistFmVenue? Venue { get; set; }
+        public SetlistFmVenue Venue { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the tour for the setlist.
         /// </summary>
-        public SetlistFmTour? Tour { get; set; }
+        public SetlistFmTour Tour { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the sets in the setlist.
         /// </summary>
-        public SetlistFmSets? Sets { get; set; }
+        public SetlistFmSets Sets { get; set; } = new();
 
         /// <summary>
         /// Gets or sets additional information about the setlist.
@@ -305,6 +305,6 @@
         /// <summary>
         /// Gets or sets the list of setlists returned by the search.
         /// </summary>
-        public List<SetlistFmSetlist> Setlist { get; set; } = new();
+        public List<SetlistFmSetlist> Setlist { get; set; } = [];
     }
 }

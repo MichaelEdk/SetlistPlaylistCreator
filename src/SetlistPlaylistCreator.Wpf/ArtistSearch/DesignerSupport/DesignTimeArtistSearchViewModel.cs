@@ -18,33 +18,30 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch.DesignerSupport
             // Sample data for design time
             Setlists =
             [
-                new Setlist
-                {
-                    ArtistName = "The Beatles",
-                    Sets =
+                new Setlist(
+                    Name: "Live at the Rooftop Concert",
+                    ArtistName: "The Beatles",
+                    Sets:
                     [
-                        new SetlistSet
-                        {
-                            Name = "Main Set",
-                            Songs =
+                        new SetlistSet(
+                            Name: "Main Set",
+                            Songs:
                             [
-                                new SetlistSong { Name = "Hey Jude", ArtistName = "The Beatles" },
-                                new SetlistSong { Name = "Let It Be", ArtistName = "The Beatles" },
-                                new SetlistSong { Name = "Come Together", ArtistName = "Led Zeppelin" }
+                                new SetlistSong("Hey Jude", "The Beatles"),
+                                new SetlistSong("Let It Be", "The Beatles"),
+                                new SetlistSong("Come Together", "Led Zeppelin")
                             ]
-                        },
-                        new SetlistSet
-                        {
-                            Name = "Encore",
-                            Songs =
+                        ),
+                        new SetlistSet(
+                            Name: "Encore",
+                            Songs:
                             [
-                                new SetlistSong { Name = "Twist and Shout", ArtistName = "Isley Brothers" },
-                                new SetlistSong { Name = "Yesterday", ArtistName = "The Beatles" }
+                                new SetlistSong("Twist and Shout", "Isley Brothers"),
+                                new SetlistSong("Yesterday", "The Beatles")
                             ]
-                        }
-                    ],
-                    Name = "Live at the Rooftop Concert"
-                }
+                        )
+                    ]
+                )
             ];
         }
 

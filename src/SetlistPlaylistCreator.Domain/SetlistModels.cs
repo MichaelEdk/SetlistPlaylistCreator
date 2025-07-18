@@ -3,53 +3,22 @@
     /// <summary>
     /// Represents a setlist, including its name, artist, and sets.
     /// </summary>
-    public record Setlist
-    {
-        /// <summary>
-        /// Gets or sets the name of the setlist.
-        /// </summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the name of the artist for the setlist.
-        /// </summary>
-        public string ArtistName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the collection of sets in the setlist.
-        /// </summary>
-        public IReadOnlyCollection<SetlistSet> Sets { get; set; } = [];
-    }
+    /// <param name="Name">The name of the setlist.</param>
+    /// <param name="ArtistName">The name of the artist for the setlist.</param>
+    /// <param name="Sets">The collection of sets in the setlist.</param>
+    public record Setlist(string Name, string ArtistName, IReadOnlyCollection<SetlistSet> Sets);
 
     /// <summary>
     /// Represents a set within a setlist, including its name and songs.
     /// </summary>
-    public record SetlistSet
-    {
-        /// <summary>
-        /// Gets or sets the name of the set.
-        /// </summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the collection of songs in the set.
-        /// </summary>
-        public IReadOnlyCollection<SetlistSong> Songs { get; set; } = [];
-    }
+    /// <param name="Name">The name of the set.</param>
+    /// <param name="Songs">The collection of songs in the set.</param>
+    public record SetlistSet(string Name, IReadOnlyCollection<SetlistSong> Songs);
 
     /// <summary>
     /// Represents a song within a set, including its name and artist.
     /// </summary>
-    public record SetlistSong
-    {
-        /// <summary>
-        /// Gets or sets the name of the song.
-        /// </summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the name of the artist for the song.
-        /// </summary>
-        public string ArtistName { get; set; } = string.Empty;
-    }
+    /// <param name="Name">The name of the song.</param>
+    /// <param name="ArtistName">The name of the artist for the song.</param>
+    public record SetlistSong(string Name, string ArtistName);
 }

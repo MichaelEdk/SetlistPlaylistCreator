@@ -9,7 +9,7 @@ namespace SetlistPlaylistCreator.Wpf.SongList
     public class SongListViewModel
         : ViewModelBase
     {
-        private Domain.Setlist _setlist = new();
+        private Domain.Setlist? _setlist;
 
         /// <summary>
         /// An event raised when the user requests to search the streaming platform for songs in the setlist.
@@ -19,7 +19,7 @@ namespace SetlistPlaylistCreator.Wpf.SongList
         /// <summary>
         /// Gets or sets the setlist to display in the song list view.
         /// </summary>
-        public Setlist Setlist
+        public Setlist? Setlist
         {
             get => _setlist;
             set => RaiseAndSetIfChanged(ref _setlist, value, nameof(Setlist));

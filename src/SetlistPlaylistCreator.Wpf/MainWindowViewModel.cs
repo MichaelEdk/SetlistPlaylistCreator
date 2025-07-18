@@ -59,6 +59,13 @@ namespace SetlistPlaylistCreator.Wpf
         {
             try
             {
+                if (_songListViewModel.Setlist == null)
+                {
+                    // Handle the case where no setlist is populated
+                    Console.WriteLine("No setlist populated.");
+                    return;
+                }
+
                 await _playlistViewModel.PopulateSetlistAsync(_songListViewModel.Setlist).ConfigureAwait(true);
             }
             catch (Exception ex)

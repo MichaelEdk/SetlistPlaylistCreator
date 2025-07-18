@@ -28,52 +28,45 @@ namespace SetlistPlaylistCreator.SetlistPlatform.SetlistFm
 
             var setlists = new List<Setlist>();
 
-            foreach (var setlistSearchResult in result.Setlist)
+            // Iterate through all of the setlists returned from SetlistFM.
+            foreach (var setlistSearchResult in result.Setlist.Where(setlist => setlist is not null))
             {
-                var setlist = new Setlist
-                {
-                    ArtistName = setlistSearchResult?.Artist?.Name ?? "",
-                    Name = $"{setlistSearchResult?.Artist?.Name} in {setlistSearchResult?.Venue?.Name}"
-                };
-
                 var sets = new List<SetlistSet>();
 
-                foreach (var setSearchResult in setlistSearchResult?.Sets?.Set ?? Enumerable.Empty<SetlistFmSet>())
+                // The Sets property is an object containing a list of sets called Set. This is just based on the JSON payload structure.
+                foreach (var setSearchResult in setlistSearchResult.Sets.Set.Where(set => set is not null))
                 {
-                    if (setSearchResult is null)
-                    {
-                        continue;
-                    }
-
-                    var set = new SetlistSet
-                    {
-                        Name = setSearchResult?.Name ?? string.Empty
-                    };
-
                     var songList = new List<SetlistSong>();
 
-                    foreach (var songSearchResult in setSearchResult?.Song ?? Enumerable.Empty<SetlistFmSong>())
+                    foreach (var songSearchResult in setSearchResult.Song)
                     {
-                        var song = new SetlistSong();
-                        song.Name = songSearchResult?.Name ?? string.Empty;
-
-                        if (songSearchResult?.Cover is not null)
-                        {
-                            song.ArtistName = songSearchResult.Cover?.Name ?? string.Empty;
-                        }
-                        else
-                        {
-                            song.ArtistName = setlistSearchResult?.Artist?.Name ?? string.Empty;
-                        }
+                        // If the song's a cover, the arist name should be taken from the Cover property. Otherwise, use the name of the setlist's artist.
+                        var songArtistName = songSearchResult.Cover?.Name ?? setlistSearchResult.Artist.Name;
+                        var song = new SetlistSong(
+                            Name: songSearchResult.Name ?? string.Empty,
+                            ArtistName: songArtistName ?? string.Empty
+                        );
 
                         songList.Add(song);
                     }
 
-                    set.Songs = songList;
+                    // In practice, the name of the set is often not populated.
+                    var set = new SetlistSet(
+                        Name: setSearchResult.Name ?? string.Empty,
+                        Songs: songList
+                    );
 
                     sets.Add(set);
                 }
-                setlist.Sets = sets;
+
+                var setlistArtistName = setlistSearchResult.Artist.Name ?? string.Empty;
+
+                var setlist = new Setlist(
+                    Name: $"{setlistArtistName} in {setlistSearchResult.Venue.Name}",
+                    ArtistName: setlistArtistName,
+                    Sets: sets
+                );
+
                 setlists.Add(setlist);
             }
 
