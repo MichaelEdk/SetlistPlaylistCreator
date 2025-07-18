@@ -1,5 +1,4 @@
 using SetlistPlaylistCreator.Domain;
-using SetlistPlaylistCreator.Service;
 using SetlistPlaylistCreator.StreamingPlatform;
 
 namespace SetlistPlaylistCreator.Service.UnitTests
@@ -44,8 +43,8 @@ namespace SetlistPlaylistCreator.Service.UnitTests
             // Arrange
             var songs = new List<Song>
             {
-                new("Yesterday", "spotify:track:4", new List<Artist> { new("The Beatles") }),
-                new("Let It Be", "spotify:track:5", new List<Artist> { new("The Beatles"), new("Paul McCartney") })
+                new("Yesterday", "spotify:track:4", [new("The Beatles")]),
+                new("Let It Be", "spotify:track:5", [new("The Beatles"), new("Paul McCartney")])
             };
 
             // Act
@@ -129,7 +128,7 @@ namespace SetlistPlaylistCreator.Service.UnitTests
             // Arrange
             var streamingPlatformSongs = new List<StreamingPlatformSong>
             {
-                new("Instrumental Track", new List<string>(), "spotify:track:instrumental")
+                new("Instrumental Track", [], "spotify:track:instrumental")
             };
 
             // Act
@@ -149,7 +148,7 @@ namespace SetlistPlaylistCreator.Service.UnitTests
             // Arrange
             var songs = new List<Song>
             {
-                new("Instrumental Track", "spotify:track:instrumental", new List<Artist>())
+                new("Instrumental Track", "spotify:track:instrumental", [])
             };
 
             // Act

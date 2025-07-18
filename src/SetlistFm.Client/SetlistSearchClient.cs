@@ -31,7 +31,7 @@ namespace SetlistFm.Client
         /// <inheritdoc />
         public async Task<SetlistFmSetlistSearchResult> SearchSetlistsAsync(string artistName, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(artistName);
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(artistName, nameof(artistName));
 
             using var httpClient = new HttpClient();
 

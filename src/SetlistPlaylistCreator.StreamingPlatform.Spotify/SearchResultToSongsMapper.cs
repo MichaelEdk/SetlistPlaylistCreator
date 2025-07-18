@@ -3,8 +3,6 @@ using SpotifyArtist = Spotify.Client.Artist;
 
 namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
 {
-    // TODO: consider adding an interface or a generic mapping layer.
-
     /// <summary>
     /// Maps the Spotify search result to the generic streaming platform models.
     /// </summary>
@@ -22,7 +20,7 @@ namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
             foreach (var item in searchResult.Tracks.Items)
             {
                 // Use the URL as the ID.
-                songs.Add(new Song(item.Name, item.Uri, [.. item.Artists.Select(Map)]));
+                songs.Add(new Song(item.Name, item.Uri, item.Artists.Select(Map).ToList()));
             }
 
             return songs;
