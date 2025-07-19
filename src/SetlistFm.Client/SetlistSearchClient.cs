@@ -23,13 +23,15 @@ namespace SetlistFm.Client
         public SetlistSearchClient(
             IOptionsMonitor<SetlistFmOptions> setlistFmOptions)
         {
+            ArgumentNullException.ThrowIfNull(setlistFmOptions, nameof(setlistFmOptions));
+            
             _setlistFmOptions = setlistFmOptions.CurrentValue;
         }
 
         /// <inheritdoc />
         public async Task<SetlistFmSetlistSearchResult> SearchSetlistsAsync(string artistName, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(artistName);
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(artistName, nameof(artistName));
 
             using var httpClient = new HttpClient();
 

@@ -18,23 +18,23 @@ namespace SetlistPlaylistCreator.Wpf.Playlist.DesignerSupport
             // Sample data for design time
             Playlist =
             [
-                new(new("Hey Jude", "The Beatles", "id1"), [new("Hey Dude", "The Boatles", "id6")], "Hey Jude", "The Beatles"),
-                new(new("Let It Be", "The Beatles", "id2"),[new("Hey Dude", "The Boatles", "id6")], "Let It Be", "The Beatles"),
-                new(new("Come Together", "Led Zeppelin", "id3"),[new("Hey Dude", "The Boatles", "id6")], "Come Together", "Led Zeppelin"),
-                new(new("Twist and Shout", "Isley Brothers", "id4"),[new("Hey Dude", "The Boatles", "id6")], "Twist and Shout", "Isley Brothers"),
-                new(new("Yesterday", "The Beatles", "id5"),[new("Hey Dude", "The Boatles", "id6")], "Yesterday", "The Beatles")
+                new(new("Hey Jude", ["The Beatles"], "id1"), [new("Hey Dude", ["The Boatles"], "id6")], "Hey Jude", "The Beatles"),
+                new(new("Let It Be", ["The Beatles"], "id2"),[new("Hey Dude", ["The Boatles"], "id6")], "Let It Be", "The Beatles"),
+                new(new("Come Together", ["Led Zeppelin"], "id3"),[new("Hey Dude", ["The Boatles"], "id6")], "Come Together", "Led Zeppelin"),
+                new(new("Twist and Shout", ["Isley Brothers"], "id4"),[new("Hey Dude", ["The Boatles"], "id6")], "Twist and Shout", "Isley Brothers"),
+                new(new("Yesterday", ["The Beatles"], "id5"),[new("Hey Dude", ["The Boatles"], "id6")], "Yesterday", "The Beatles")
             ];
-            PlaylistRowViewModel = Playlist
+            PlaylistRowViewModels = Playlist
                 .Select(playlist =>
-                new PlaylistRowViewModel()
-                {
-                     Id = Guid.NewGuid(),
-                     SearchedSong = playlist,
-                     SelectedSong = playlist.FirstMatch,
-                     SetlistArtist = playlist.SearchedArtistName,
-                     SetlistSongName = playlist.SearchedSongName,
-                     IsPopupVisible = true
-                })
+                    new PlaylistRowViewModel
+                    {
+                         Id = Guid.NewGuid(),
+                         SearchedSong = playlist,
+                         SelectedSong = playlist.FirstMatch,
+                         SetlistArtist = playlist.SearchedArtistName,
+                         SetlistSongName = playlist.SearchedSongName,
+                         IsPopupVisible = true
+                    })
                 .ToList();
         }
 

@@ -14,29 +14,27 @@ namespace SetlistPlaylistCreator.Wpf.SongList.DesignerSupport
         public DesignTimeSongListViewModel()
             : base()
         {
-            Setlist = new()
-            {
-                ArtistName = "The Beatles",
-                Sets = [
-                    new SetlistSet()
-                    {
-                        Name = "Main Set",
-                        Songs = [
-                            new SetlistSong { Name = "Hey Jude", ArtistName = "The Beatles" },
-                            new SetlistSong { Name = "Let It Be", ArtistName = "The Beatles" },
-                            new SetlistSong { Name = "Come Together", ArtistName = "Led Zeppelin" }
+            Setlist = new Setlist(
+                Name: "Live at the Rooftop Concert",
+                ArtistName: "The Beatles",
+                Sets: [
+                    new SetlistSet(
+                        Name: "Main Set",
+                        Songs: [
+                            new SetlistSong("Hey Jude", "The Beatles"),
+                            new SetlistSong("Let It Be", "The Beatles"),
+                            new SetlistSong("Come Together", "Led Zeppelin")
                         ]
-                    },
-                    new ()
-                    {
-                        Name = "Encore",
-                        Songs = [
-                            new SetlistSong { Name = "Twist and Shout", ArtistName = "Isely Brothers" },
-                            new SetlistSong { Name = "Yesterday", ArtistName = "The Beatles" }
+                    ),
+                    new SetlistSet(
+                        Name: "Encore",
+                        Songs: [
+                            new SetlistSong("Twist and Shout", "Isely Brothers"),
+                            new SetlistSong("Yesterday", "The Beatles")
                         ]
-                    }],
-                Name = "Live at the Rooftop Concert"
-            };
+                    )
+                ]
+            );
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace SetlistPlaylistCreator.StreamingPlatform
+﻿namespace SetlistPlaylistCreator.StreamingPlatform
 {
     /// <summary>
     /// Represents a music artist.
@@ -8,20 +6,15 @@ namespace SetlistPlaylistCreator.StreamingPlatform
     public record Artist
     {
         /// <summary>
-        /// Gets or sets the name of the artist.
+        /// Gets the name of the artist.
         /// </summary>
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Artist"/> record.
         /// </summary>
         /// <param name="Name">The name of the artist.</param>
-        [JsonConstructor]
-        public Artist(string Name)
-        {
-            this.Name = Name;
-        }
+        public Artist(string Name) => this.Name = Name;
     }
 
     /// <summary>
@@ -30,34 +23,30 @@ namespace SetlistPlaylistCreator.StreamingPlatform
     public record Song
     {
         /// <summary>
-        /// Gets or sets the title of the song.
+        /// Gets the title of the song.
         /// </summary>
-        [JsonPropertyName("title")]
-        public string Title { get; set; }
+        public string Title { get; }
 
         /// <summary>
-        /// Gets or sets the artist of the song.
+        /// Gets the artists of the song.
         /// </summary>
-        [JsonPropertyName("artist")]
-        public Artist Artist { get; set; }
+        public IReadOnlyCollection<Artist> Artists { get; }
 
         /// <summary>
-        /// Gets or sets the unique identifier of the song.
+        /// Gets the unique identifier of the song.
         /// </summary>
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string Id { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Song"/> record.
         /// </summary>
         /// <param name="Title">The title of the song.</param>
         /// <param name="Id">The unique identifier of the song.</param>
-        /// <param name="Artist">The artist of the song.</param>
-        [JsonConstructor]
-        public Song(string Title, string Id, Artist Artist)
+        /// <param name="Artists">The artists of the song.</param>
+        public Song(string Title, string Id, IReadOnlyCollection<Artist> Artists)
         {
             this.Title = Title;
-            this.Artist = Artist;
+            this.Artists = Artists;
             this.Id = Id;
         }
     }
@@ -68,19 +57,19 @@ namespace SetlistPlaylistCreator.StreamingPlatform
     public record Album
     {
         /// <summary>
-        /// Gets or sets the title of the album.
+        /// Gets the title of the album.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; }
 
         /// <summary>
-        /// Gets or sets the artist of the album.
+        /// Gets the artist of the album.
         /// </summary>
-        public Artist Artist { get; set; }
+        public Artist Artist { get; }
 
         /// <summary>
-        /// Gets or sets the collection of songs in the album.
+        /// Gets the collection of songs in the album.
         /// </summary>
-        public IEnumerable<Song> Songs { get; set; }
+        public IEnumerable<Song> Songs { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Album"/> record.
@@ -88,7 +77,6 @@ namespace SetlistPlaylistCreator.StreamingPlatform
         /// <param name="Title">The title of the album.</param>
         /// <param name="Artist">The artist of the album.</param>
         /// <param name="Songs">The collection of songs in the album.</param>
-        [JsonConstructor]
         public Album(string Title, Artist Artist, IEnumerable<Song> Songs)
         {
             this.Title = Title;
@@ -103,23 +91,20 @@ namespace SetlistPlaylistCreator.StreamingPlatform
     public record Playlist
     {
         /// <summary>
-        /// Gets or sets the name of the playlist.
+        /// Gets the name of the playlist.
         /// </summary>
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
-        /// Gets or sets the collection of songs in the playlist.
+        /// Gets the collection of songs in the playlist.
         /// </summary>
-        [JsonPropertyName("songs")]
-        public IEnumerable<Song> Songs { get; set; }
+        public IEnumerable<Song> Songs { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Playlist"/> record.
         /// </summary>
         /// <param name="Name">The name of the playlist.</param>
         /// <param name="Songs">The collection of songs in the playlist.</param>
-        [JsonConstructor]
         public Playlist(string Name, IEnumerable<Song> Songs)
         {
             this.Name = Name;

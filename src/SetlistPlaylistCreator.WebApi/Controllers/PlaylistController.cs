@@ -20,6 +20,11 @@ namespace SetlistPlaylistCreator.WebApi.Controllers
             IAuthorizationCodeStore authorizationCodeStore,
             IOptionsMonitor<SpotifyOptions> spotifyOptions)
         {
+            ArgumentNullException.ThrowIfNull(playlistCreator, nameof(playlistCreator));
+            ArgumentNullException.ThrowIfNull(authorizationProvider, nameof(authorizationProvider));
+            ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
+            ArgumentNullException.ThrowIfNull(spotifyOptions, nameof(spotifyOptions));
+            
             _playlistCreator = playlistCreator;
             _authorizationProvider = authorizationProvider;
             _authorizationCodeStore = authorizationCodeStore;
