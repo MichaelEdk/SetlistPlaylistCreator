@@ -4,17 +4,17 @@ using System.Windows.Input;
 namespace SetlistPlaylistCreator.Wpf.SongList
 {
     /// <summary>
-    /// A view model to back the SongListUserControl view.
+    /// A view model to back the SongListUserControl view. On this page, the user can view a setlist and search for songs on a streaming platform.
     /// </summary>
     public class SongListViewModel
         : ViewModelBase
     {
-        private Domain.Setlist? _setlist;
+        private Setlist? _setlist;
 
         /// <summary>
         /// An event raised when the user requests to search the streaming platform for songs in the setlist.
         /// </summary>
-        public event EventHandler? SearchSonglist;
+        public event EventHandler<SearchSongListEventArgs>? SearchSonglist;
 
         /// <summary>
         /// Gets or sets the setlist to display in the song list view.
@@ -28,9 +28,11 @@ namespace SetlistPlaylistCreator.Wpf.SongList
         /// <summary>
         /// Gets a command that searches the streaming platform for songs in the setlist.
         /// </summary>
-        public ICommand SearchSpotify => new RelayCommand<object>(_ =>
-        {
-            SearchSonglist?.Invoke(this, EventArgs.Empty);
-        });
+        public ICommand SearchSpotify => new RelayCommand<object>(
+            _ => Setlist is not null,
+            _ =>
+            {
+                SearchSonglist?.Invoke(this, new SearchSongListEventArgs(Setlist!));
+            });
     }
 }

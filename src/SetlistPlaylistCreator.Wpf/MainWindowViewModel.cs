@@ -11,18 +11,11 @@ namespace SetlistPlaylistCreator.Wpf
     /// </summary>
     public class MainWindowViewModel
     {
-        private readonly AuthorizationViewModel _authorizationViewModel;
         private readonly ArtistSearchViewModel _artistSearchViewModel;
-        private readonly SongListViewModel _songListViewModel;
-        private readonly PlaylistViewModel _playlistViewModel;
         private readonly IAuthorizationCodeStore _authorizationCodeStore;
-
-        /// <summary>
-        /// An event raised when the data context has changed. The user control displayed in the main
-        /// window is dependent on the view model.
-        /// </summary>
-        public event EventHandler<DataContextChangedEventArgs>? ContextChanged;
-
+        private readonly AuthorizationViewModel _authorizationViewModel;
+        private readonly PlaylistViewModel _playlistViewModel;
+        private readonly SongListViewModel _songListViewModel;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
@@ -55,35 +48,15 @@ namespace SetlistPlaylistCreator.Wpf
             _songListViewModel.SearchSonglist += SongListViewModel_SearchSonglist;
         }
 
-        private async void SongListViewModel_SearchSonglist(object? sender, EventArgs e)
-        {
-            try
-            {
-                if (_songListViewModel.Setlist == null)
-                {
-                    // Handle the case where no setlist is populated
-                    Console.WriteLine("No setlist populated.");
-                    return;
-                }
+        /// <summary>
+        /// An event raised when the data context has changed. The user control displayed in the main
+        /// window is dependent on the view model.
+        /// </summary>
+        public event EventHandler<DataContextChangedEventArgs>? ContextChanged;
 
-                await _playlistViewModel.PopulateSetlistAsync(_songListViewModel.Setlist).ConfigureAwait(true);
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions, e.g., show a message to the user
-                // For now, we will just log it to the console
-                Console.WriteLine($"Error populating setlist: {ex.Message}");
-                return;
-            }
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_playlistViewModel));
-        }
-
-        private void ArtistSearchViewModel_SetlistSelected(object? sender, EventArgs e)
-        {
-            _songListViewModel.Setlist = _artistSearchViewModel.SelectedSetlist;
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_songListViewModel));
-        }
-
+        /// <summary>
+        /// Raises the <see cref="ContextChanged"/> event with the initial view model based on the authorization code state.
+        /// </summary>
         public void Initialize()
         {
             var authorizationCode = _authorizationCodeStore.RetrieveCode();
@@ -95,9 +68,32 @@ namespace SetlistPlaylistCreator.Wpf
             ContextChanged?.Invoke(this, initialViewModel);
         }
 
+        private void ArtistSearchViewModel_SetlistSelected(object? sender, SetlistSelectedEventArgs e)
+        {
+            _songListViewModel.Setlist = e.SelectedSetlist;
+            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_songListViewModel));
+        }
+
         private void AuthorizationViewModel_AuthorizationComplete(object? sender, EventArgs e)
         {
             ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_artistSearchViewModel));
+        }
+
+        private async void SongListViewModel_SearchSonglist(object? sender, SearchSongListEventArgs e)
+        {
+            try
+            {
+                await _playlistViewModel.PopulateSetlistAsync(e.SongList).ConfigureAwait(true);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, e.g., show a message to the user
+                // For now, we will just log it to the console
+                Console.WriteLine($"Error populating setlist: {ex.Message}");
+                return;
+            }
+
+            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_playlistViewModel));
         }
     }
 }
