@@ -1,6 +1,5 @@
 ﻿using SetlistPlaylistCreator.Domain;
 using SetlistPlaylistCreator.SetlistPlatform;
-using System.Windows.Input;
 
 namespace SetlistPlaylistCreator.Wpf.ArtistSearch
 {
@@ -36,13 +35,17 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         public string ArtistSearchTerm
         {
             get => _artistSearchTerm;
-            set => RaiseAndSetIfChanged(ref _artistSearchTerm, value, nameof(ArtistSearchTerm));
+            set
+            {
+                RaiseAndSetIfChanged(ref _artistSearchTerm, value, nameof(ArtistSearchTerm));
+                SearchArtists.RaiseCanExecuteChanged();
+            }
         }
 
         /// <summary>
         /// Gets a command that searches for setlists based on the artist search term.
         /// </summary>
-        public ICommand SearchArtists => new RelayCommand<object>(
+        public RelayCommand<object> SearchArtists => new (
             _ => !string.IsNullOrEmpty(ArtistSearchTerm),
             async _ =>
             {
@@ -53,7 +56,7 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         /// <summary>
         /// Gets a command that selects a setlist and raises the SetlistSelected event.
         /// </summary>
-        public ICommand SelectSetlist => new RelayCommand<Setlist>(setlist =>
+        public RelayCommand<Setlist> SelectSetlist => new(setlist =>
         {
             SetlistSelected?.Invoke(this, new SetlistSelectedEventArgs(setlist));
         });

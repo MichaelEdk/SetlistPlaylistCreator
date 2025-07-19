@@ -75,7 +75,7 @@
                 CornerRadius="4"
                 Padding="12">
                     <ListView
-                        ItemsSource="{Binding PlaylistRowViewModel}"
+                        ItemsSource="{Binding PlaylistRowViewModels}"
                         Background="Transparent"
                         BorderThickness="0"
                         HorizontalContentAlignment="Stretch"
@@ -99,7 +99,7 @@
                                                        Text="{Binding SelectedSong.SongName}"/>
                                             <TextBlock FontSize="12"
                                                        Foreground="Gray"
-                                                       Text="{Binding SelectedSong.ArtistName}"/>
+                                                       Text="{Binding SelectedSong.ArtistsString}"/>
                                         </StackPanel>
                                         <Button
                                             Content="Edit"
@@ -139,7 +139,7 @@
                                                                     <TextBlock
                                                                         FontSize="12"
                                                                         Foreground="Gray"
-                                                                        Text="{Binding ArtistName}"
+                                                                        Text="{Binding ArtistsString}"
                                                                         TextWrapping="WrapWithOverflow"/>
                                                                 </StackPanel>
                                                                 <Button
