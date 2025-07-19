@@ -46,7 +46,7 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         /// Gets a command that searches for setlists based on the artist search term.
         /// </summary>
         public RelayCommand<object> SearchArtists => new (
-            _ => !string.IsNullOrEmpty(ArtistSearchTerm),
+            _ => !string.IsNullOrWhiteSpace(ArtistSearchTerm),
             async _ =>
             {
                 var setlists = await _setlistSearch.SearchForSetlistsAsync(ArtistSearchTerm, CancellationToken.None).ConfigureAwait(false);
