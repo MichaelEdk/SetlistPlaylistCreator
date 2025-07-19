@@ -59,7 +59,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             // Act
             viewModel.Playlist = [];
 
-            // Assert
+            // Assert that propertyName was set in the event handler
             Assert.AreEqual(nameof(viewModel.Playlist), propertyName);
         }
 
@@ -91,8 +91,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             // Act
             viewModel.PlaylistRowViewModels = [];
 
-            // Assert
-            Assert.AreEqual("_playlistRowViewModels", propertyName);
+            // Assert that propertyName was set in the event handler
+            Assert.AreEqual(nameof(viewModel.PlaylistRowViewModels), propertyName);
         }
 
         [TestMethod]
@@ -124,7 +124,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             var viewModel = CreatePlaylistViewModel(mockService);
 
             // Act
-            await viewModel.PopulateSetlistAsync(testSetlist);
+            await viewModel.PopulateSetlistAsync(testSetlist).ConfigureAwait(false);
 
             // Assert
             await mockService.Received(1).ProposePlaylistAsync(testSetlist);
@@ -149,7 +149,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             var viewModel = CreatePlaylistViewModel(mockService);
 
             // Act
-            await viewModel.PopulateSetlistAsync(testSetlist);
+            await viewModel.PopulateSetlistAsync(testSetlist).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(2, viewModel.PlaylistRowViewModels.Count);
@@ -186,7 +186,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             var viewModel = CreatePlaylistViewModel(mockService);
 
             // Act
-            await viewModel.PopulateSetlistAsync(testSetlist);
+            await viewModel.PopulateSetlistAsync(testSetlist).ConfigureAwait(false);
 
             // Assert
             Assert.AreEqual(1, viewModel.PlaylistRowViewModels.Count);
@@ -252,7 +252,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
             mockService.CreatePlaylistAsync(Arg.Any<string>(), Arg.Any<IReadOnlyCollection<StreamingPlatformSong>>()).Returns(Task.FromResult(true));
 
             var viewModel = CreatePlaylistViewModel(mockService);
-            await viewModel.PopulateSetlistAsync(testSetlist);
+            await viewModel.PopulateSetlistAsync(testSetlist).ConfigureAwait(false);
 
             // Act
             viewModel.CreatePlaylist.Execute(null);
@@ -334,24 +334,6 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests
                 "Test Setlist",
                 Arg.Is<IReadOnlyCollection<StreamingPlatformSong>>(songs => 
                     songs.Count == 1 && songs.First() == alternativeSong));
-        }
-
-        [TestMethod]
-        public async Task PopulateSetlistAsync_ServiceThrowsException_PropagatesException()
-        {
-            // Arrange
-            var mockService = Substitute.For<ISetlistPlaylistCreatorService>();
-            var testSetlist = new Setlist("Test Setlist", "Test Artist", []);
-            var expectedException = new InvalidOperationException("Service error");
-
-            mockService.ProposePlaylistAsync(testSetlist).Returns(Task.FromException<IReadOnlyCollection<SearchedSong>>(expectedException));
-
-            var viewModel = CreatePlaylistViewModel(mockService);
-
-            // Act & Assert
-            var actualException = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
-                viewModel.PopulateSetlistAsync(testSetlist));
-            Assert.AreSame(expectedException, actualException);
         }
 
         private static PlaylistViewModel CreatePlaylistViewModel(

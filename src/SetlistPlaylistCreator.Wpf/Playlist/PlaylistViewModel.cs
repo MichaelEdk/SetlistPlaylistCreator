@@ -59,7 +59,7 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         public List<PlaylistRowViewModel> PlaylistRowViewModels
         { 
             get => _playlistRowViewModels;
-            set => RaiseAndSetIfChanged(ref _playlistRowViewModels, value, nameof(_playlistRowViewModels));
+            set => RaiseAndSetIfChanged(ref _playlistRowViewModels, value, nameof(PlaylistRowViewModels));
         }
 
         private List<StreamingPlatformSong> SelectedSongs
