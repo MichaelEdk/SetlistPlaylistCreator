@@ -22,33 +22,77 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
         [TestMethod]
         public void Constructor_WithNullAuthorizationCodeUrlBuilder_ThrowsArgumentNullException()
         {
+            // Arrange
+            var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
+            var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
+            var secrets = CreateSpotifyOptions();
+
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                CreateAuthorizationViewModel(authorizationCodeUrlBuilder: null!));
+            var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
+                new AuthorizationViewModel(
+                    null!,
+                    authorizationCodeStore,
+                    externalBrowserLauncher,
+                    secrets));
+
+            Assert.AreEqual("authorizationCodeUrlBuilder", actualException.ParamName);
         }
 
         [TestMethod]
         public void Constructor_WithNullAuthorizationCodeStore_ThrowsArgumentNullException()
         {
+            // Arrange
+            var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
+            var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
+            var secrets = CreateSpotifyOptions();
+
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                CreateAuthorizationViewModel(authorizationCodeStore: null!));
+            var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
+                new AuthorizationViewModel(
+                    authorizationCodeUrlBuilder,
+                    null!,
+                    externalBrowserLauncher,
+                    secrets));
+
+            Assert.AreEqual("authorizationCodeStore", actualException.ParamName);
         }
 
         [TestMethod]
         public void Constructor_WithNullExternalBrowserLauncher_ThrowsArgumentNullException()
         {
+            // Arrange
+            var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
+            var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
+            var secrets = CreateSpotifyOptions();
+
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                CreateAuthorizationViewModel(externalBrowserLauncher: null!));
+            var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
+                new AuthorizationViewModel(
+                    authorizationCodeUrlBuilder,
+                    authorizationCodeStore,
+                    null!,
+                    secrets));
+
+            Assert.AreEqual("externalBrowserLauncher", actualException.ParamName);
         }
 
         [TestMethod]
         public void Constructor_WithNullSecrets_ThrowsArgumentNullException()
         {
+            // Arrange
+            var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
+            var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
+            var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
+
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                CreateAuthorizationViewModel(secrets: null!));
+            var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
+                new AuthorizationViewModel(
+                    authorizationCodeUrlBuilder,
+                    authorizationCodeStore,
+                    externalBrowserLauncher,
+                    null!));
+
+            Assert.AreEqual("secrets", actualException.ParamName);
         }
 
         [TestMethod]
