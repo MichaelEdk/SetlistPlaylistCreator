@@ -20,6 +20,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
 
         private readonly IAuthorizationCodeStore _authorizationCodeStore;
         private readonly IAuthorizationCodeUrlBuilder _authorizationCodeUrlBuilder;
+        private readonly IExternalBrowserLauncher _externalBrowserLauncher;
         private readonly SpotifyOptions _secrets;
 
         private string _authorizationButtonText = "Authorize with Spotify";
@@ -29,18 +30,22 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
         /// </summary>
         /// <param name="authorizationCodeUrlBuilder">Component used to build Spotify authorization URLs.</param>
         /// <param name="authorizationCodeStore">A store for keeping the authorization code used to generate Spotify access tokens.</param>
+        /// <param name="externalBrowserLauncher">Launches external browsers.</param>
         /// <param name="secrets">Spotify secret configuration.</param>
         public AuthorizationViewModel(
             IAuthorizationCodeUrlBuilder authorizationCodeUrlBuilder,
             IAuthorizationCodeStore authorizationCodeStore,
+            IExternalBrowserLauncher externalBrowserLauncher,
             IOptions<SpotifyOptions> secrets)
         {
             ArgumentNullException.ThrowIfNull(authorizationCodeUrlBuilder, nameof(authorizationCodeUrlBuilder));
             ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
+            ArgumentNullException.ThrowIfNull(externalBrowserLauncher, nameof(externalBrowserLauncher));
             ArgumentNullException.ThrowIfNull(secrets, nameof(secrets));
 
             _authorizationCodeUrlBuilder = authorizationCodeUrlBuilder;
             _authorizationCodeStore = authorizationCodeStore;
+            _externalBrowserLauncher = externalBrowserLauncher;
             _secrets = secrets.Value;
 
             _authorizationCodeFileWatcher.Changed += FileWatcher_Changed;
@@ -86,10 +91,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
             // The user follows the flow, which will then redirect to the redirect address configured in Spotify.
             // This address should have a custom URL protocol handler, which opens this application and passes the token in as
             // a command line parameter.
-            Process.Start(new ProcessStartInfo(url.AbsoluteUri)
-            {
-                UseShellExecute = true
-            });
+            _externalBrowserLauncher.Launch(url);
 
             _authorizationCodeFileWatcher.EnableRaisingEvents = true;
 
