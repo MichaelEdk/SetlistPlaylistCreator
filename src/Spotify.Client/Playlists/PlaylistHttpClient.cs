@@ -11,19 +11,21 @@ namespace Spotify.Client.Playlists
     public class PlaylistHttpClient
         : IPlaylistHttpClient
     {
-        private readonly Uri _baseAddress = new("https://api.spotify.com/v1/");
-
         private readonly IAccessTokenProvider _accessTokenProvider;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlaylistHttpClient"/> class.
         /// </summary>
         /// <param name="accessTokenProvider">Provides access tokens.</param>
-        public PlaylistHttpClient(IAccessTokenProvider accessTokenProvider)
+        /// <param name="httpClientFactory">The HTTP client used to make requests to the Spotify API.</param>
+        public PlaylistHttpClient(IAccessTokenProvider accessTokenProvider, IHttpClientFactory httpClientFactory)
         {
             ArgumentNullException.ThrowIfNull(accessTokenProvider, nameof(accessTokenProvider));
+            ArgumentNullException.ThrowIfNull(httpClientFactory, nameof(httpClientFactory));
 
             _accessTokenProvider = accessTokenProvider;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <inheritdoc />
@@ -32,16 +34,16 @@ namespace Spotify.Client.Playlists
         {
             var token = await _accessTokenProvider.GetTokenAsync().ConfigureAwait(false);
 
-            using var client = CreateHttpClient();
+            using var httpClient = _httpClientFactory.CreateClient(nameof(PlaylistHttpClient));
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var payload = new
             {
                 uris = songUris
             };
 
-            var httpResponse = await client.PostAsJsonAsync($"playlists/{playlistId}/tracks", payload);
+            var httpResponse = await httpClient.PostAsJsonAsync($"playlists/{playlistId}/tracks", payload);
 
             if (!httpResponse.IsSuccessStatusCode)
             {
@@ -56,16 +58,16 @@ namespace Spotify.Client.Playlists
         {
             var token = await _accessTokenProvider.GetTokenAsync().ConfigureAwait(false);
 
-            using var client = CreateHttpClient();
+            using var httpClient = _httpClientFactory.CreateClient(nameof(PlaylistHttpClient));
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var playlist = new CreatePlaylistRequest
             {
                 Name = playlistName
             };
 
-            var httpResponse = await client.PostAsJsonAsync($"users/{userId}/playlists", playlist).ConfigureAwait(false);
+            var httpResponse = await httpClient.PostAsJsonAsync($"users/{userId}/playlists", playlist).ConfigureAwait(false);
 
             await using var json = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
@@ -79,11 +81,6 @@ namespace Spotify.Client.Playlists
 
             return response?.Id ?? string.Empty;
         }
-
-        private HttpClient CreateHttpClient() => new()
-        {
-            BaseAddress = _baseAddress
-        };
 
         private class CreatePlaylistRequest
         {

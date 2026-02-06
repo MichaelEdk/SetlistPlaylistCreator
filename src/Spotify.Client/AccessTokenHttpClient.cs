@@ -10,26 +10,27 @@ namespace Spotify.Client
     public class AccessTokenHttpClient
         : IAccessTokenHttpClient
     {
-        private static readonly Uri BaseAddress = new("https://accounts.spotify.com/api/");
-
         private readonly SpotifyOptions _spotifyOptions;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessTokenHttpClient"/> class.
         /// </summary>
         /// <param name="spotifyOptions">Configuration options related to Spotify.</param>
-        public AccessTokenHttpClient(IOptions<SpotifyOptions> spotifyOptions)
+        /// <param name="httpClientFactory">The HTTP client factory used to make requests to the Spotify API.</param>
+        public AccessTokenHttpClient(IOptions<SpotifyOptions> spotifyOptions, IHttpClientFactory httpClientFactory)
         {
             ArgumentNullException.ThrowIfNull(spotifyOptions, nameof(spotifyOptions));
 
             _spotifyOptions = spotifyOptions.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <inheritdoc />
         /// <exception cref="Exception">Thrown if the HTTP request was not successful.</exception>
         public async Task<AccessToken> GetAccessTokenAsync()
         {
-            using var httpClient = CreateHttpClient();
+            using var httpClient = _httpClientFactory.CreateClient(nameof(AccessTokenHttpClient));
 
             var result = await httpClient.PostAsync("token", CreateContent()).ConfigureAwait(false);
 
@@ -51,10 +52,5 @@ namespace Spotify.Client
             ["client_id"] = _spotifyOptions.ClientId,
             ["client_secret"] = _spotifyOptions.ClientSecret
         });
-
-        private HttpClient CreateHttpClient() => new()
-        {
-            BaseAddress = BaseAddress
-        };
     }
 }

@@ -9,19 +9,21 @@ namespace Spotify.Client
     public class SearchHttpClient
         : ISearchHttpClient
     {
-        private readonly Uri _baseAddress = new("https://api.spotify.com/v1/");
-
         private readonly IAccessTokenHttpClient _accessTokenHttpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchHttpClient"/> class.
         /// </summary>
         /// <param name="accessTokenHttpClient">Provides Spotify access tokens.</param>
-        public SearchHttpClient(IAccessTokenHttpClient accessTokenHttpClient)
+        /// <param name="httpClientFactory">A IHttpClientFactory instance to use for making requests to the Spotify API.</param>
+        public SearchHttpClient(IAccessTokenHttpClient accessTokenHttpClient, IHttpClientFactory httpClientFactory)
         {
             ArgumentNullException.ThrowIfNull(accessTokenHttpClient, nameof(accessTokenHttpClient));
+            ArgumentNullException.ThrowIfNull(httpClientFactory, nameof(httpClientFactory));
 
             _accessTokenHttpClient = accessTokenHttpClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <inheritdoc />
@@ -30,11 +32,11 @@ namespace Spotify.Client
         {
             var token = await _accessTokenHttpClient.GetAccessTokenAsync().ConfigureAwait(false);
 
-            using var client = CreateHttpClient();
+            using var httpClient = _httpClientFactory.CreateClient(nameof(SearchHttpClient));
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
-            var response = await client.GetAsync($"search?q={songTitle}%20track:{songTitle}%20artist:{artistName}&type=track").ConfigureAwait(false);
+            var response = await httpClient.GetAsync($"search?q={songTitle}%20track:{songTitle}%20artist:{artistName}&type=track").ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -47,10 +49,5 @@ namespace Spotify.Client
             // TODO: Custom exception type and better message.
             return JsonConvert.DeserializeObject<SearchResult>(json) ?? throw new Exception($"Result object is null. Json payload: '{json}'");
         }
-
-        private HttpClient CreateHttpClient() => new()
-        {
-            BaseAddress = _baseAddress
-        };
     }
 }

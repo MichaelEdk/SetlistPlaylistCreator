@@ -1,21 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SetlistPlaylistCreator.Wpf.ArtistSearch;
-using SetlistPlaylistCreator.Wpf.Authorization;
-using System.Windows;
-using Spotify.Client.Authorization;
+using SetlistFm.Client;
+using SetlistFm.Client.Configuration;
+using SetlistPlaylistCreator.Service;
 using SetlistPlaylistCreator.SetlistPlatform;
 using SetlistPlaylistCreator.SetlistPlatform.SetlistFm;
-using SetlistFm.Client.Configuration;
-using SetlistFm.Client;
-using SetlistPlaylistCreator.Wpf.SongList;
-using SetlistPlaylistCreator.Service;
 using SetlistPlaylistCreator.StreamingPlatform;
 using SetlistPlaylistCreator.StreamingPlatform.Spotify;
-using Spotify.Client;
 using SetlistPlaylistCreator.WebApi.Configuration;
+using SetlistPlaylistCreator.Wpf.ArtistSearch;
+using SetlistPlaylistCreator.Wpf.Authorization;
 using SetlistPlaylistCreator.Wpf.Playlist;
+using SetlistPlaylistCreator.Wpf.SongList;
+using Spotify.Client;
+using Spotify.Client.Authorization;
+using Spotify.Client.HttpClients;
 using Spotify.Client.Playlists;
+using System.Windows;
 
 namespace SetlistPlaylistCreator.Wpf
 {
@@ -83,6 +84,7 @@ namespace SetlistPlaylistCreator.Wpf
                .AddScoped<IExternalBrowserLauncher, ExternalBrowserLauncher>()
                .Configure<SetlistFmOptions>(configuration.GetSection(SetlistFmOptions.Name))
                .Configure<SpotifyOptions>(configuration.GetSection(SpotifyOptions.Name))
+               .AddSpotifyHttpClients()
                .BuildServiceProvider();
 
             var mainWindow = services.GetRequiredService<MainWindow>();
