@@ -20,7 +20,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install NuGet packages
-        run: dotnet restore
+        run: dotnet restore .\src\SetlistPlaylistCreator.sln
       
       - name: Build
         run: dotnet build .\src\SetlistPlaylistCreator.sln --configuration Release --no-restore
