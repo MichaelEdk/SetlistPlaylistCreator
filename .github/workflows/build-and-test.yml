@@ -18,16 +18,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: Build and test
-        run: |
-          dotnet build --configuration Release
-          dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Install NuGet packages
         run: dotnet restore
       
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build .\src\SetlistPlaylistCreator.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test .\src\SetlistPlaylistCreator.sln --configuration Release --no-build --verbosity normal
