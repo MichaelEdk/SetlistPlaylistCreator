@@ -82,6 +82,7 @@ namespace SetlistPlaylistCreator.Wpf
                .AddScoped<IPlaylistCreator, SpotifyPlaylistCreator>()
                .AddScoped<IAccessTokenProvider, AuthorizationCodeAccessTokenProvider>()
                .AddScoped<IExternalBrowserLauncher, ExternalBrowserLauncher>()
+               .AddScoped<IAuthorizationCodeFileWatcher, AuthorizationCodeFileWatcher>()
                .Configure<SetlistFmOptions>(configuration.GetSection(SetlistFmOptions.Name))
                .Configure<SpotifyOptions>(configuration.GetSection(SpotifyOptions.Name))
                .AddSpotifyHttpClients()

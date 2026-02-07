@@ -26,6 +26,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
             var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
             var secrets = CreateSpotifyOptions();
+            var authorizationCodeFileWatcher = Substitute.For<IAuthorizationCodeFileWatcher>();
 
             // Act & Assert
             var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
@@ -33,7 +34,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
                     null!,
                     authorizationCodeStore,
                     externalBrowserLauncher,
-                    secrets));
+                    secrets,
+                    authorizationCodeFileWatcher));
 
             Assert.AreEqual("authorizationCodeUrlBuilder", actualException.ParamName);
         }
@@ -45,6 +47,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
             var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
             var secrets = CreateSpotifyOptions();
+            var authorizationCodeFileWatcher = Substitute.For<IAuthorizationCodeFileWatcher>();
 
             // Act & Assert
             var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
@@ -52,7 +55,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
                     authorizationCodeUrlBuilder,
                     null!,
                     externalBrowserLauncher,
-                    secrets));
+                    secrets,
+                    authorizationCodeFileWatcher));
 
             Assert.AreEqual("authorizationCodeStore", actualException.ParamName);
         }
@@ -64,6 +68,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
             var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
             var secrets = CreateSpotifyOptions();
+            var authorizationCodeFileWatcher = Substitute.For<IAuthorizationCodeFileWatcher>();
 
             // Act & Assert
             var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
@@ -71,7 +76,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
                     authorizationCodeUrlBuilder,
                     authorizationCodeStore,
                     null!,
-                    secrets));
+                    secrets,
+                    authorizationCodeFileWatcher));
 
             Assert.AreEqual("externalBrowserLauncher", actualException.ParamName);
         }
@@ -83,6 +89,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             var authorizationCodeUrlBuilder = Substitute.For<IAuthorizationCodeUrlBuilder>();
             var authorizationCodeStore = Substitute.For<IAuthorizationCodeStore>();
             var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
+            var authorizationCodeFileWatcher = Substitute.For<IAuthorizationCodeFileWatcher>();
 
             // Act & Assert
             var actualException = Assert.ThrowsException<ArgumentNullException>(() =>
@@ -90,7 +97,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
                     authorizationCodeUrlBuilder,
                     authorizationCodeStore,
                     externalBrowserLauncher,
-                    null!));
+                    null!,
+                    authorizationCodeFileWatcher));
 
             Assert.AreEqual("secrets", actualException.ParamName);
         }
@@ -144,6 +152,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             var externalBrowserLauncher = Substitute.For<IExternalBrowserLauncher>();
             var secrets = CreateSpotifyOptions("test-client-id", "https://redirect.com");
             var expectedUri = new Uri("https://spotify.com/authorize");
+            var authorizationCodeFileWatcher = Substitute.For<IAuthorizationCodeFileWatcher>();
 
             authorizationCodeUrlBuilder.BuildUri("test-client-id", "https://redirect.com")
                 .Returns(expectedUri);
@@ -152,7 +161,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
                 authorizationCodeUrlBuilder,
                 authorizationCodeStore,
                 externalBrowserLauncher,
-                secrets);
+                secrets,
+                authorizationCodeFileWatcher);
 
             // Act
             viewModel.Authorize.Execute(null);
@@ -160,6 +170,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             // Assert
             authorizationCodeUrlBuilder.Received(1).BuildUri("test-client-id", "https://redirect.com");
             externalBrowserLauncher.Received(1).Launch(expectedUri);
+            authorizationCodeFileWatcher.Received(1).Enable();
         }
 
         [TestMethod]
@@ -193,13 +204,15 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
             IAuthorizationCodeUrlBuilder? authorizationCodeUrlBuilder = null,
             IAuthorizationCodeStore? authorizationCodeStore = null,
             IExternalBrowserLauncher? externalBrowserLauncher = null,
-            IOptions<SpotifyOptions>? secrets = null)
+            IOptions<SpotifyOptions>? secrets = null,
+            IAuthorizationCodeFileWatcher? authorizationCodeFileWatcher = null)
         {
             return new(
                 authorizationCodeUrlBuilder ?? Substitute.For<IAuthorizationCodeUrlBuilder>(),
                 authorizationCodeStore ?? Substitute.For<IAuthorizationCodeStore>(),
                 externalBrowserLauncher ?? Substitute.For<IExternalBrowserLauncher>(),
-                secrets ?? CreateSpotifyOptions()
+                secrets ?? CreateSpotifyOptions(),
+                authorizationCodeFileWatcher ?? Substitute.For<IAuthorizationCodeFileWatcher>()
             );
         }
     }

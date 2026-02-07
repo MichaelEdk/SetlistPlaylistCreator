@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SetlistPlaylistCreator.WebApi.Configuration;
 using Spotify.Client.Authorization;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 
@@ -13,10 +12,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
     public class AuthorizationViewModel
         : ViewModelBase
     {
-        private readonly FileSystemWatcher _authorizationCodeFileWatcher = new(EncryptedTokenFile.Directory, EncryptedTokenFile.FileName)
-        {
-            NotifyFilter = NotifyFilters.LastWrite
-        };
+        private readonly IAuthorizationCodeFileWatcher _authorizationCodeFileWatcher;
 
         private readonly IAuthorizationCodeStore _authorizationCodeStore;
         private readonly IAuthorizationCodeUrlBuilder _authorizationCodeUrlBuilder;
@@ -32,21 +28,25 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
         /// <param name="authorizationCodeStore">A store for keeping the authorization code used to generate Spotify access tokens.</param>
         /// <param name="externalBrowserLauncher">Launches external browsers.</param>
         /// <param name="secrets">Spotify secret configuration.</param>
+        /// <param name="authorizationCodeFileWatcher">Abstraction for watching the authorization code file.</param>
         public AuthorizationViewModel(
             IAuthorizationCodeUrlBuilder authorizationCodeUrlBuilder,
             IAuthorizationCodeStore authorizationCodeStore,
             IExternalBrowserLauncher externalBrowserLauncher,
-            IOptions<SpotifyOptions> secrets)
+            IOptions<SpotifyOptions> secrets,
+            IAuthorizationCodeFileWatcher authorizationCodeFileWatcher)
         {
             ArgumentNullException.ThrowIfNull(authorizationCodeUrlBuilder, nameof(authorizationCodeUrlBuilder));
             ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
             ArgumentNullException.ThrowIfNull(externalBrowserLauncher, nameof(externalBrowserLauncher));
             ArgumentNullException.ThrowIfNull(secrets, nameof(secrets));
+            ArgumentNullException.ThrowIfNull(authorizationCodeFileWatcher, nameof(authorizationCodeFileWatcher));
 
             _authorizationCodeUrlBuilder = authorizationCodeUrlBuilder;
             _authorizationCodeStore = authorizationCodeStore;
             _externalBrowserLauncher = externalBrowserLauncher;
             _secrets = secrets.Value;
+            _authorizationCodeFileWatcher = authorizationCodeFileWatcher;
 
             _authorizationCodeFileWatcher.Changed += FileWatcher_Changed;
         }
@@ -77,6 +77,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
             if (!string.IsNullOrWhiteSpace(authorizationCode))
             {
                 _authorizationCodeFileWatcher.Changed -= FileWatcher_Changed;
+                _authorizationCodeFileWatcher.Disable();
 
                 // This should notify consumers that it is time to move to the next window.
                 AuthorizationComplete?.Invoke(this, new EventArgs());
@@ -93,7 +94,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
             // a command line parameter.
             _externalBrowserLauncher.Launch(url);
 
-            _authorizationCodeFileWatcher.EnableRaisingEvents = true;
+            _authorizationCodeFileWatcher.Enable();
 
             AuthorizationButtonText = "Waiting for authorization...";
         }
