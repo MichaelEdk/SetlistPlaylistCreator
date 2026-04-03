@@ -10,6 +10,7 @@ using SetlistPlaylistCreator.StreamingPlatform.Spotify;
 using SetlistPlaylistCreator.WebApi.Configuration;
 using SetlistPlaylistCreator.Wpf.ArtistSearch;
 using SetlistPlaylistCreator.Wpf.Authorization;
+using SetlistPlaylistCreator.Wpf.Complete;
 using SetlistPlaylistCreator.Wpf.Playlist;
 using SetlistPlaylistCreator.Wpf.SongList;
 using Spotify.Client;
@@ -70,6 +71,7 @@ namespace SetlistPlaylistCreator.Wpf
                .AddScoped<MainWindowViewModel>()
                .AddScoped<SongListViewModel>()
                .AddScoped<PlaylistViewModel>()
+               .AddScoped<CompleteViewModel>()
                .AddScoped<ISetlistSearch, SetlistFmSetlistSearch>()
                .AddScoped<ISetlistSearchClient, SetlistSearchClient>()
                .AddScoped<IAuthorizationCodeStore, DpapiAuthorizationCodeStore>()

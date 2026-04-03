@@ -1,5 +1,6 @@
 ﻿using SetlistPlaylistCreator.Wpf.ArtistSearch;
 using SetlistPlaylistCreator.Wpf.Authorization;
+using SetlistPlaylistCreator.Wpf.Complete;
 using SetlistPlaylistCreator.Wpf.Playlist;
 using SetlistPlaylistCreator.Wpf.SongList;
 using Spotify.Client.Authorization;
@@ -16,6 +17,8 @@ namespace SetlistPlaylistCreator.Wpf
         private readonly AuthorizationViewModel _authorizationViewModel;
         private readonly PlaylistViewModel _playlistViewModel;
         private readonly SongListViewModel _songListViewModel;
+        private readonly CompleteViewModel _completeViewModel;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
@@ -23,29 +26,35 @@ namespace SetlistPlaylistCreator.Wpf
         /// <param name="artistSearchViewModel">The view model for searching for an artist.</param>
         /// <param name="songListViewModel">The view model for listing a setlist.</param>
         /// <param name="playlistViewModel">The view mode for showing a playlist.</param>
+        /// <param name="completeViewModel">The view model for the completion screen.</param>
         /// <param name="authorizationCodeStore">Stores and retrieves the Spotify authorization code.</param>
         public MainWindowViewModel(
             AuthorizationViewModel authorizationViewModel,
             ArtistSearchViewModel artistSearchViewModel,
             SongListViewModel songListViewModel,
             PlaylistViewModel playlistViewModel,
+            CompleteViewModel completeViewModel,
             IAuthorizationCodeStore authorizationCodeStore)
         {
             ArgumentNullException.ThrowIfNull(authorizationViewModel, nameof(authorizationViewModel));
             ArgumentNullException.ThrowIfNull(artistSearchViewModel, nameof(artistSearchViewModel));
             ArgumentNullException.ThrowIfNull(songListViewModel, nameof(songListViewModel));
             ArgumentNullException.ThrowIfNull(playlistViewModel, nameof(playlistViewModel));
+            ArgumentNullException.ThrowIfNull(completeViewModel, nameof(completeViewModel));
             ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
 
             _authorizationViewModel = authorizationViewModel;
             _artistSearchViewModel = artistSearchViewModel;
             _songListViewModel = songListViewModel;
             _playlistViewModel = playlistViewModel;
+            _completeViewModel = completeViewModel;
             _authorizationCodeStore = authorizationCodeStore;
 
             _authorizationViewModel.AuthorizationComplete += AuthorizationViewModel_AuthorizationComplete;
             _artistSearchViewModel.SetlistSelected += ArtistSearchViewModel_SetlistSelected;
             _songListViewModel.SearchSonglist += SongListViewModel_SearchSonglist;
+            _playlistViewModel.PlaylistCreated += PlaylistViewModel_PlaylistCreated;
+            _completeViewModel.ShutdownRequested += CompleteViewModel_ShutdownRequested;
         }
 
         /// <summary>
@@ -77,6 +86,16 @@ namespace SetlistPlaylistCreator.Wpf
         private void AuthorizationViewModel_AuthorizationComplete(object? sender, EventArgs e)
         {
             ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_artistSearchViewModel));
+        }
+
+        private void CompleteViewModel_ShutdownRequested(object? sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void PlaylistViewModel_PlaylistCreated(object? sender, EventArgs e)
+        {
+            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_completeViewModel));
         }
 
         private async void SongListViewModel_SearchSonglist(object? sender, SearchSongListEventArgs e)

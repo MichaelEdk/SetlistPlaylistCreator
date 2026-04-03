@@ -7,6 +7,7 @@
         xmlns:authorization="clr-namespace:SetlistPlaylistCreator.Wpf.Authorization"
         xmlns:songList="clr-namespace:SetlistPlaylistCreator.Wpf.SongList"
         xmlns:playlist="clr-namespace:SetlistPlaylistCreator.Wpf.Playlist"
+        xmlns:complete="clr-namespace:SetlistPlaylistCreator.Wpf.Complete"
         xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance authorization:AuthorizationViewModel, IsDesignTimeCreatable=False}"
@@ -23,6 +24,9 @@
         </DataTemplate>
         <DataTemplate x:Name="PlaylistView" DataType="{x:Type playlist:PlaylistViewModel}">
             <playlist:Playlist DataContext="{Binding}"/>
+        </DataTemplate>
+        <DataTemplate x:Name="CompleteView" DataType="{x:Type complete:CompleteViewModel}">
+            <complete:CompleteView DataContext="{Binding}"/>
         </DataTemplate>
     </Window.Resources>
     <Grid>

@@ -35,13 +35,21 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         }
 
         /// <summary>
+        /// An event raised when a playlist is successfully created.
+        /// </summary>
+        public event EventHandler? PlaylistCreated;
+
+        /// <summary>
         /// Gets a command that creates a playlist based on the selected songs.
         /// </summary>
         public ICommand CreatePlaylist => new RelayCommand<object>(
             _ => SelectedSongs.Count != 0,
             async _ =>
             {
-                await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false);
+                if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false))
+                {
+                    PlaylistCreated?.Invoke(this, EventArgs.Empty);
+                }
             });
 
         /// <summary>

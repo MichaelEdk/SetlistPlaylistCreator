@@ -35,7 +35,17 @@ namespace SetlistPlaylistCreator.Service
             var playlistSongs = DomainMapper.Map(songs);
 
             var playlist = new Playlist(playlistName, playlistSongs);
-            await _playlistCreator.CreatePlaylistAsync(playlist).ConfigureAwait(false);
+
+            try
+            {
+                await _playlistCreator.CreatePlaylistAsync(playlist).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine($"An error occurred while creating the playlist: {ex.Message}");
+                return false;
+            }
 
             return true;
         }
