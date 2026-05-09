@@ -12,6 +12,7 @@
              d:DesignWidth="800">
 
     <UserControl.Resources>
+        <windows:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Black"/>
             <Setter Property="Foreground" Value="AntiqueWhite"/>
@@ -64,7 +65,7 @@
 
                 <!-- Create Playlist button -->
                 <Button Grid.Row="1"
-                Content="Create Playlist"
+                Content="{Binding CreatePlaylistButtonText}"
                 Command="{Binding CreatePlaylist}"
                 Style="{StaticResource PrimaryButtonStyle}"
                 Margin="0,0,0,16"/>
@@ -79,7 +80,8 @@
                         Background="Transparent"
                         BorderThickness="0"
                         HorizontalContentAlignment="Stretch"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        IsEnabled="{Binding IsCreatingPlaylist, Converter={StaticResource InverseBooleanConverter}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="White"

@@ -22,6 +22,8 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         private List<SearchedSong> _playlist = [];
         private List<PlaylistRowViewModel> _playlistRowViewModels = [];
         private string _setlistName = string.Empty;
+        private bool _isCreatingPlaylist;
+        private string _createPlaylistButtonText = "Create Playlist";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlaylistViewModel"/> class.
@@ -40,15 +42,44 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         public event EventHandler? PlaylistCreated;
 
         /// <summary>
+        /// Gets or sets a value indicating whether a playlist is currently being created.
+        /// </summary>
+        public bool IsCreatingPlaylist
+        {
+            get => _isCreatingPlaylist;
+            set => RaiseAndSetIfChanged(ref _isCreatingPlaylist, value, nameof(IsCreatingPlaylist));
+        }
+
+        /// <summary>
+        /// Gets or sets the text to display on the Create Playlist button.
+        /// </summary>
+        public string CreatePlaylistButtonText
+        {
+            get => _createPlaylistButtonText;
+            set => RaiseAndSetIfChanged(ref _createPlaylistButtonText, value, nameof(CreatePlaylistButtonText));
+        }
+
+        /// <summary>
         /// Gets a command that creates a playlist based on the selected songs.
         /// </summary>
         public ICommand CreatePlaylist => new RelayCommand<object>(
-            _ => SelectedSongs.Count != 0,
+            _ => SelectedSongs.Count != 0 && !IsCreatingPlaylist,
             async _ =>
             {
-                if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false))
+                IsCreatingPlaylist = true;
+                CreatePlaylistButtonText = "Creating Playlist...";
+
+                try
                 {
-                    PlaylistCreated?.Invoke(this, EventArgs.Empty);
+                    if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false))
+                    {
+                        PlaylistCreated?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+                finally
+                {
+                    IsCreatingPlaylist = false;
+                    CreatePlaylistButtonText = "Create Playlist";
                 }
             });
 
