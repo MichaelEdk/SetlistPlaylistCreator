@@ -72,8 +72,15 @@ namespace Spotify.Client.Authorization
                     // Parse the response JSON to get the access token and refresh token
                     // Assumes the response contains "access_token" and "refresh_token" fields
                     // You may need to adjust this parsing logic based on the actual response format
-                    dynamic jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
-                    _accessToken = jsonResponse?.access_token;
+                    dynamic? jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+
+                    if (jsonResponse == null)
+                    {
+                        throw new InvalidOperationException($"Failed to deserialize the response from Spotify API. Raw response content: {responseContent}");
+                    }
+
+                    _accessToken = jsonResponse.access_token;
+
                     return _accessToken;
                 }
                 else

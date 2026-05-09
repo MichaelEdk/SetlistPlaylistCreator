@@ -45,6 +45,11 @@ namespace SetlistFm.Client
 
             var result = JsonSerializer.Deserialize<SetlistFmSetlistSearchResult>(rawResponseContent, s_camelCaseJsonSerializerOptions);
 
+            if (result is null)
+            {
+                throw new InvalidOperationException($"Failed to deserialize the response from Setlist.fm API. Raw response content: {rawResponseContent}");
+            }
+
             return result;
         }
     }

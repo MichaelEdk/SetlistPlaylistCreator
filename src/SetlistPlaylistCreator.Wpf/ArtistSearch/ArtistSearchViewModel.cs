@@ -80,10 +80,18 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         /// <summary>
         /// Gets a command that selects a setlist and raises the SetlistSelected event.
         /// </summary>
-        public RelayCommand<Setlist> SelectSetlist => new(setlist =>
-        {
-            SetlistSelected?.Invoke(this, new SetlistSelectedEventArgs(setlist));
-        });
+        public RelayCommand<Setlist> SelectSetlist => new(
+            setlist => setlist is not null,
+            setlist =>
+            {
+                if (setlist is null)
+                {
+                    // This shouldn't happen. Including it for the compiler.
+                    return;
+                }
+
+                SetlistSelected?.Invoke(this, new SetlistSelectedEventArgs(setlist));
+            });
 
         /// <summary>
         /// Gets or sets the list of setlists for the searched artist.
