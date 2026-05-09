@@ -1,5 +1,6 @@
 ﻿using SetlistPlaylistCreator.Domain;
 using SetlistPlaylistCreator.SetlistPlatform;
+using System.Windows.Input;
 
 namespace SetlistPlaylistCreator.Wpf.ArtistSearch
 {
@@ -11,6 +12,7 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         private readonly ISetlistSearch _setlistSearch;
 
         private string _artistSearchTerm = string.Empty;
+        private bool _isSearchingArtists;
         private List<Setlist> _setlists = [];
 
         /// <summary>
@@ -38,7 +40,20 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
             set
             {
                 RaiseAndSetIfChanged(ref _artistSearchTerm, value, nameof(ArtistSearchTerm));
-                SearchArtists.RaiseCanExecuteChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether artist search is in progress.
+        /// </summary>
+        public bool IsSearchingArtists
+        {
+            get => _isSearchingArtists;
+            set
+            {
+                RaiseAndSetIfChanged(ref _isSearchingArtists, value, nameof(IsSearchingArtists));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -46,11 +61,20 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
         /// Gets a command that searches for setlists based on the artist search term.
         /// </summary>
         public RelayCommand<object> SearchArtists => new (
-            _ => !string.IsNullOrWhiteSpace(ArtistSearchTerm),
+            _ => !string.IsNullOrWhiteSpace(ArtistSearchTerm) && !IsSearchingArtists,
             async _ =>
             {
-                var setlists = await _setlistSearch.SearchForSetlistsAsync(ArtistSearchTerm, CancellationToken.None).ConfigureAwait(false);
-                Setlists = setlists.ToList();
+                IsSearchingArtists = true;
+
+                try
+                {
+                    var setlists = await _setlistSearch.SearchForSetlistsAsync(ArtistSearchTerm, CancellationToken.None).ConfigureAwait(false);
+                    Setlists = setlists.ToList();
+                }
+                finally
+                {
+                    IsSearchingArtists = false;
+                }
             });
 
         /// <summary>

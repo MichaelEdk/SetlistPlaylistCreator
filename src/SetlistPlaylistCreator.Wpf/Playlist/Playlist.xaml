@@ -15,7 +15,16 @@
         <windows:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
 
-    <ContentControl Style="{StaticResource ContentControl.PageShellStyle}">
+    <ContentControl>
+        <ContentControl.Style>
+            <Style TargetType="ContentControl" BasedOn="{StaticResource ContentControl.PageShellStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsCreatingPlaylist}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

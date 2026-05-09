@@ -20,6 +20,7 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
         private readonly SpotifyOptions _secrets;
 
         private string _authorizationButtonText = "Authorize with Spotify";
+        private bool _isAuthorizing;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizationViewModel"/> class.
@@ -66,9 +67,24 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the authorization process is currently in progress.
+        /// </summary>
+        public bool IsAuthorizing
+        {
+            get => _isAuthorizing;
+            set
+            {
+                RaiseAndSetIfChanged(ref _isAuthorizing, value, nameof(IsAuthorizing));
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        /// <summary>
         /// Gets a command that kicks off the Spotify authorization process.
         /// </summary>
-        public ICommand Authorize => new RelayCommand<string>(_ => InitializeAuthorizationProcess());
+        public ICommand Authorize => new RelayCommand<string>(
+            _ => !IsAuthorizing,
+            _ => InitializeAuthorizationProcess());
 
         private void FileWatcher_Changed(object? sender, FileSystemEventArgs e)
         {
@@ -86,6 +102,8 @@ namespace SetlistPlaylistCreator.Wpf.Authorization
 
         private void InitializeAuthorizationProcess()
         {
+            IsAuthorizing = true;
+
             var url = _authorizationCodeUrlBuilder.BuildUri(_secrets.ClientId, _secrets.RedirectAddress);
 
             // Open the default browser with the Spotify authorization URL.

@@ -100,6 +100,8 @@ namespace SetlistPlaylistCreator.Wpf
 
         private async void SongListViewModel_SearchSonglist(object? sender, SearchSongListEventArgs e)
         {
+            _songListViewModel.IsSearching = true;
+
             try
             {
                 await _playlistViewModel.PopulateSetlistAsync(e.SongList).ConfigureAwait(true);
@@ -110,6 +112,10 @@ namespace SetlistPlaylistCreator.Wpf
                 // For now, we will just log it to the console
                 Console.WriteLine($"Error populating setlist: {ex.Message}");
                 return;
+            }
+            finally
+            {
+                _songListViewModel.IsSearching = false;
             }
 
             ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_playlistViewModel));

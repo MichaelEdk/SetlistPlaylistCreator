@@ -11,7 +11,16 @@
              d:DesignWidth="800"
              x:Name="ArtistSearch">
 
-    <ContentControl x:Name="OuterGrid" Style="{StaticResource ContentControl.PageShellStyle}">
+    <ContentControl x:Name="OuterGrid">
+        <ContentControl.Style>
+            <Style TargetType="ContentControl" BasedOn="{StaticResource ContentControl.PageShellStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSearchingArtists}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -33,10 +42,19 @@
                          Text="{Binding ArtistSearchTerm, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="14"
                          VerticalContentAlignment="Center"/>
-                <Button Content="Search"
-                        Command="{Binding SearchArtists}"
-                        Style="{StaticResource Button.PrimaryStyle}"
-                        Margin="12,0,0,0"/>
+                <Button Command="{Binding SearchArtists}"
+                        Margin="12,0,0,0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button.PrimaryStyle}">
+                            <Setter Property="Content" Value="Search"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSearchingArtists}" Value="True">
+                                    <Setter Property="Content" Value="Searching..."/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
 
             <Border Grid.Row="2" Style="{StaticResource Border.InsetPanelCardStyle}">

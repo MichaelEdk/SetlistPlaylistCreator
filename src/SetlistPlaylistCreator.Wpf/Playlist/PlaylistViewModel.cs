@@ -71,7 +71,7 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
 
                 try
                 {
-                    if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(false))
+                    if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(true))
                     {
                         PlaylistCreated?.Invoke(this, EventArgs.Empty);
                     }
@@ -122,7 +122,7 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
             ArgumentNullException.ThrowIfNull(setlist, nameof(setlist));
 
             _setlistName = setlist.Name;
-            var searchedSongs = await _setlistPlaylistCreatorService.ProposePlaylistAsync(setlist).ConfigureAwait(false);
+            var searchedSongs = await _setlistPlaylistCreatorService.ProposePlaylistAsync(setlist).ConfigureAwait(true);
             PlaylistRowViewModels = searchedSongs
                 .Select(song =>
                     new PlaylistRowViewModel()

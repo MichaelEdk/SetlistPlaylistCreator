@@ -9,6 +9,7 @@ namespace SetlistPlaylistCreator.Wpf.SongList
     public class SongListViewModel
         : ViewModelBase
     {
+        private bool _isSearching;
         private Setlist? _setlist;
 
         /// <summary>
@@ -26,10 +27,19 @@ namespace SetlistPlaylistCreator.Wpf.SongList
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a Spotify search is currently in progress.
+        /// </summary>
+        public bool IsSearching
+        {
+            get => _isSearching;
+            set => RaiseAndSetIfChanged(ref _isSearching, value, nameof(IsSearching));
+        }
+
+        /// <summary>
         /// Gets a command that searches the streaming platform for songs in the setlist.
         /// </summary>
         public ICommand SearchSpotify => new RelayCommand<object>(
-            _ => Setlist is not null,
+            _ => Setlist is not null && !IsSearching,
             _ =>
             {
                 SearchSonglist?.Invoke(this, new SearchSongListEventArgs(Setlist!));

@@ -9,7 +9,16 @@
              d:DataContext="{d:DesignInstance designersupport:DesignTimeSongListViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="800">
-    <ContentControl Style="{StaticResource ContentControl.PageShellStyle}">
+    <ContentControl>
+        <ContentControl.Style>
+            <Style TargetType="ContentControl" BasedOn="{StaticResource ContentControl.PageShellStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -24,9 +33,18 @@
             <StackPanel Grid.Row="1"
                         Orientation="Horizontal"
                         Margin="0,0,0,16">
-                <Button Content="Search Spotify"
-                        Command="{Binding SearchSpotify}"
-                        Style="{StaticResource Button.PrimaryWithRightGapStyle}"/>
+                <Button Command="{Binding SearchSpotify}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button.PrimaryWithRightGapStyle}">
+                            <Setter Property="Content" Value="Search Spotify"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                                    <Setter Property="Content" Value="Searching Spotify..."/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <TextBlock Text="{Binding Setlist.Name}"
                            FontSize="16"
                            FontWeight="SemiBold"
