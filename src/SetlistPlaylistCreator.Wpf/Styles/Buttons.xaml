@@ -1,0 +1,29 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="Button.PrimaryStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Brush.ButtonPrimaryBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ButtonPrimaryForeground}"/>
+        <Setter Property="Padding" Value="10,6"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
+    <Style x:Key="Button.PrimaryCenteredStyle" TargetType="Button" BasedOn="{StaticResource Button.PrimaryStyle}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Button.PrimaryWithRightGapStyle" TargetType="Button" BasedOn="{StaticResource Button.PrimaryStyle}">
+        <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+
+    <Style x:Key="Button.CompactActionStyle" TargetType="Button" BasedOn="{StaticResource Button.PrimaryStyle}">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="MinWidth" Value="50"/>
+        <Setter Property="Width" Value="Auto"/>
+    </Style>
+</ResourceDictionary>

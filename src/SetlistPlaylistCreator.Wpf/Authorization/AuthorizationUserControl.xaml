@@ -12,58 +12,27 @@
 
     <UserControl.Resources>
         <windows:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-
-        <!-- Reusable primary button style -->
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Black"/>
-            <Setter Property="Foreground" Value="AntiqueWhite"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0,0,0,0"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="180"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-        </Style>
     </UserControl.Resources>
 
-    <Grid Background="#F3F3F3">
-        <Border CornerRadius="8"
-            Background="White"
-            Padding="24"
-            Margin="40"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center">
+    <ContentControl Style="{StaticResource ContentControl.PageShellStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <Border.Effect>
-                <DropShadowEffect
-                    Color="Black"
-                    BlurRadius="10"
-                    ShadowDepth="2"
-                    Opacity="0.3"/>
-            </Border.Effect>
+            <TextBlock Grid.Row="0"
+                       Text="To continue, authorize with your Spotify account."
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       Margin="0,0,0,24"
+                       HorizontalAlignment="Center"/>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- Instruction Text -->
-                <TextBlock Grid.Row="0"
-                   Text="To continue, authorize with your Spotify account."
-                   TextWrapping="Wrap"
-                   FontSize="16"
-                   Margin="0,0,0,24"
-                   HorizontalAlignment="Center"/>
-
-                <!-- Authorize Button -->
-                <Button Grid.Row="1"
-                        Content="{Binding AuthorizationButtonText}"
-                        Command="{Binding Authorize}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        HorizontalAlignment="Center"/>
-            </Grid>
-        </Border>
-    </Grid>
+            <Button Grid.Row="1"
+                    Content="{Binding AuthorizationButtonText}"
+                    Command="{Binding Authorize}"
+                    Style="{StaticResource Button.PrimaryCenteredStyle}"
+                    MinWidth="180"/>
+        </Grid>
+    </ContentControl>
 </UserControl>

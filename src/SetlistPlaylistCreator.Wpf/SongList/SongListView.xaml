@@ -9,101 +9,63 @@
              d:DataContext="{d:DesignInstance designersupport:DesignTimeSongListViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="800">
+    <ContentControl Style="{StaticResource ContentControl.PageShellStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-    <UserControl.Resources>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Black"/>
-            <Setter Property="Foreground" Value="AntiqueWhite"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Margin" Value="0,0,12,0"/>
-        </Style>
-    </UserControl.Resources>
+            <TextBlock Grid.Row="0"
+                       Text="Spotify Setlist Creator"
+                       Style="{StaticResource TextBlock.PageTitleStyle}"/>
 
-    <Grid Background="#F3F3F3">
-        <Border CornerRadius="8"
-            Background="White"
-            Padding="24"
-            Margin="40"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center">
-            <Border.Effect>
-                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
-            </Border.Effect>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Margin="0,0,0,16">
+                <Button Content="Search Spotify"
+                        Command="{Binding SearchSpotify}"
+                        Style="{StaticResource Button.PrimaryWithRightGapStyle}"/>
+                <TextBlock Text="{Binding Setlist.Name}"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"/>
+            </StackPanel>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Setlist.Sets}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Border.ListItemCardStyle}" Padding="12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock FontSize="16" FontWeight="Bold">
+                                            <Run Text="Set name: "/>
+                                            <Run Text="{Binding Name}"/>
+                                            <Run Text=" ("/>
+                                            <Run Text="{Binding Songs.Count, Mode=OneWay}"/>
+                                            <Run Text=" songs)"/>
+                                        </TextBlock>
 
-                <!-- Header -->
-                <TextBlock Grid.Row="0"
-                   Text="Spotify Setlist Creator"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   Margin="0,0,0,16"/>
-
-                <!-- SearchSpotify and Setlist Name -->
-                <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    Margin="0,0,0,16">
-                    <Button Content="Search Spotify"
-                  Command="{Binding SearchSpotify}"
-                  Style="{StaticResource PrimaryButtonStyle}"/>
-                    <TextBlock Text="{Binding Setlist.Name}"
-                     FontSize="16"
-                     FontWeight="SemiBold"
-                     VerticalAlignment="Center"
-                     Margin="12,0,0,0"/>
+                                        <ItemsControl ItemsSource="{Binding Songs}" Margin="12,8,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,0,0,6">
+                                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
+                                                        <TextBlock Style="{StaticResource TextBlock.SecondaryBodyStyle}" Text="{Binding ArtistName}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
-
-                <!-- Scrollable list of sets -->
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding Setlist.Sets}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="#FAFAFA"
-                          CornerRadius="4"
-                          Padding="12"
-                          Margin="0,0,0,12"
-                          BorderBrush="#DDD"
-                          BorderThickness="1">
-                                        <StackPanel>
-                                            <TextBlock FontSize="16" FontWeight="Bold">
-                        <Run Text="Set name: "/>
-                        <Run Text="{Binding Name}"/>
-                        <Run Text=" ("/>
-                        <Run Text="{Binding Songs.Count, Mode=OneWay}"/>
-                        <Run Text=" songs)"/>
-                                            </TextBlock>
-
-                                            <!-- Song list -->
-                                            <ItemsControl ItemsSource="{Binding Songs}" Margin="12,8,0,0">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Margin="0,0,0,6">
-                                                            <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
-                                                            <TextBlock Foreground="Gray" FontSize="12" Text="{Binding ArtistName}"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-
-            </Grid>
-        </Border>
-    </Grid>
+            </ScrollViewer>
+        </Grid>
+    </ContentControl>
 </UserControl>

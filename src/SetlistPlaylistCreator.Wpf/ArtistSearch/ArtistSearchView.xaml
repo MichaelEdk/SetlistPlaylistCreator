@@ -11,151 +11,82 @@
              d:DesignWidth="800"
              x:Name="ArtistSearch">
 
-    <UserControl.Resources>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Black"/>
-            <Setter Property="Foreground" Value="AntiqueWhite"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-        <Style x:Key="SetlistButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Black"/>
-            <Setter Property="Foreground" Value="AntiqueWhite"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Height" Value="Auto"/>
-            <Setter Property="Width" Value="Auto"/>
-            <Setter Property="MinWidth" Value="120"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-    </UserControl.Resources>
+    <ContentControl x:Name="OuterGrid" Style="{StaticResource ContentControl.PageShellStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-    <Grid Background="#F3F3F3" x:Name="OuterGrid">
-        <Border CornerRadius="8"
-            Background="White"
-            Padding="24"
-            Margin="40"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center">
-            <Border.Effect>
-                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
-            </Border.Effect>
+            <TextBlock Grid.Row="0"
+                       Text="Spotify Setlist Creator"
+                       Style="{StaticResource TextBlock.PageTitleStyle}"/>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Header -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Search bar -->
-                    <RowDefinition Height="*"/>
-                    <!-- Results panel -->
-                </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Margin="0,0,0,16">
+                <TextBlock Text="Search for an artist:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"/>
+                <TextBox Width="200"
+                         Text="{Binding ArtistSearchTerm, UpdateSourceTrigger=PropertyChanged}"
+                         FontSize="14"
+                         VerticalContentAlignment="Center"/>
+                <Button Content="Search"
+                        Command="{Binding SearchArtists}"
+                        Style="{StaticResource Button.PrimaryStyle}"
+                        Margin="12,0,0,0"/>
+            </StackPanel>
 
-                <!-- Header -->
-                <TextBlock Grid.Row="0"
-                   Text="Spotify Setlist Creator"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   Margin="0,0,0,16"/>
+            <Border Grid.Row="2" Style="{StaticResource Border.InsetPanelCardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <!-- Search Bar -->
-                <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    Margin="0,0,0,16">
-                    <TextBlock Text="Search for an artist:"
-                     VerticalAlignment="Center"
-                     Margin="0,0,10,0"/>
-                    <TextBox Width="200"
-                   Text="{Binding ArtistSearchTerm, UpdateSourceTrigger=PropertyChanged}"
-                   FontSize="14"
-                   VerticalContentAlignment="Center"/>
-                    <Button Content="Search"
-                  Command="{Binding SearchArtists}"
-                  Style="{StaticResource PrimaryButtonStyle}"
-                  Margin="12,0,0,0"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="0"
+                               Text="Setlists:"
+                               Style="{StaticResource TextBlock.SectionTitleStyle}"
+                               Margin="0,0,0,8"/>
 
-                <!-- Scrollable Setlists with colored background -->
-                <Border Grid.Row="2"
-                Background="#FAFAFA"
-                CornerRadius="4"
-                Padding="12">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding Setlists}"
+                              Style="{StaticResource ListView.BaseStyle}"
+                              ItemContainerStyle="{StaticResource ListViewItem.StretchContainerStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Border.ListItemCardStyle}" SnapsToDevicePixels="True">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0"
-                       Text="Setlists:"
-                       FontSize="14"
-                       FontWeight="SemiBold"
-                       Margin="0,0,0,8"/>
+                                        <WrapPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
+                                            <TextBlock Text="Artist: " FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding ArtistName}" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Title: " FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Name}" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Sets: " FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Sets.Count}"/>
+                                        </WrapPanel>
 
-                        <ListView Grid.Row="1"
-                      ItemsSource="{Binding Setlists}"
-                      Background="Transparent"
-                      BorderThickness="0"
-                                  HorizontalContentAlignment="Stretch"
-                                  VerticalContentAlignment="Stretch"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="Margin" Value="0"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Padding="8"
-                                        Background="White"
-                                        CornerRadius="4"
-                                        SnapsToDevicePixels="True"
-                                        Margin="0,0,0,8"
-                                        BorderBrush="#DDD"
-                                        BorderThickness="1">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <!-- Information panel -->
-                                            <WrapPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
-                                                <TextBlock Text="Artist: " FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding ArtistName}" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Title: " FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding Name}" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Sets: " FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding Sets.Count}"/>
-                                            </WrapPanel>
-
-                                            <!-- Action button -->
-                                            <Button Grid.Column="1"
-                  Content="Select"
-                  Command="{Binding DataContext.SelectSetlist, ElementName=OuterGrid}"
-                  CommandParameter="{Binding}"
-                  Style="{StaticResource PrimaryButtonStyle}"
-                  Margin="0"
-                  VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                </Border>
-            </Grid>
-        </Border>
-    </Grid>
+                                        <Button Grid.Column="1"
+                                                Content="Select"
+                                                Command="{Binding DataContext.SelectSetlist, ElementName=OuterGrid}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource Button.PrimaryStyle}"
+                                                Margin="0"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+        </Grid>
+    </ContentControl>
 </UserControl>

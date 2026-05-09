@@ -3,5 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Styles/Spacing.xaml"/>
+                <ResourceDictionary Source="Styles/Typography.xaml"/>
+                <ResourceDictionary Source="Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="Styles/Cards.xaml"/>
+                <ResourceDictionary Source="Styles/ListView.xaml"/>
+                <ResourceDictionary Source="Styles/Templates.xaml"/>
+                <ResourceDictionary Source="Controls/PageShell.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
