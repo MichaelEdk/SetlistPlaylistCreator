@@ -33,6 +33,12 @@ namespace SetlistFm.TestApplication
             Console.WriteLine("Enter an artist's name:");
             var artistName = Console.ReadLine();
 
+            if (artistName == null)
+            {
+                Console.WriteLine("Artist name cannot be null.");
+                return;
+            }
+
             var result = await searchClient.SearchSetlistsAsync(artistName, CancellationToken.None).ConfigureAwait(true);
 
             foreach (var setlist in result.Setlist)

@@ -213,7 +213,7 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.ArtistSearch
         }
 
         [TestMethod]
-        public void SelectSetlist_CanExecute_WithNullSetlist_ReturnsTrue()
+        public void SelectSetlist_CanExecute_WithNullSetlist_ReturnsFalse()
         {
             // Arrange
             var viewModel = CreateArtistSearchViewModel();
@@ -221,8 +221,8 @@ namespace SetlistPlaylistCreator.Wpf.UnitTests.ArtistSearch
             // Act
             var canExecute = viewModel.SelectSetlist.CanExecute(null);
 
-            // Assert - RelayCommand without canExecute predicate always returns true
-            Assert.IsTrue(canExecute);
+            // Assert
+            Assert.IsFalse(canExecute);
         }
 
         [TestMethod]
