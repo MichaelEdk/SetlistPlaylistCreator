@@ -9,8 +9,20 @@ namespace SetlistPlaylistCreator.Wpf.SongList
     public class SongListViewModel
         : ViewModelBase
     {
+        private readonly RelayCommand<object> _searchSpotifyCommand;
+
         private bool _isSearching;
         private Setlist? _setlist;
+
+        public SongListViewModel()
+        {
+            _searchSpotifyCommand = new RelayCommand<object>(
+            _ => Setlist is not null && !IsSearching,
+            _ =>
+            {
+                SearchSonglist?.Invoke(this, new SearchSongListEventArgs(Setlist!));
+            });
+        }
 
         /// <summary>
         /// An event raised when the user requests to search the streaming platform for songs in the setlist.
@@ -38,11 +50,6 @@ namespace SetlistPlaylistCreator.Wpf.SongList
         /// <summary>
         /// Gets a command that searches the streaming platform for songs in the setlist.
         /// </summary>
-        public ICommand SearchSpotify => new RelayCommand<object>(
-            _ => Setlist is not null && !IsSearching,
-            _ =>
-            {
-                SearchSonglist?.Invoke(this, new SearchSongListEventArgs(Setlist!));
-            });
+        public ICommand SearchSpotify => _searchSpotifyCommand;
     }
 }

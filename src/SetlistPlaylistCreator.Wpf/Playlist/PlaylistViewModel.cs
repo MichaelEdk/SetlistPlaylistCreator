@@ -18,6 +18,7 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         : ViewModelBase
     {
         private readonly ISetlistPlaylistCreatorService _setlistPlaylistCreatorService;
+        private readonly AsyncRelayCommand<object> _createPlaylistCommand;
 
         private List<SearchedSong> _playlist = [];
         private List<PlaylistRowViewModel> _playlistRowViewModels = [];
@@ -34,6 +35,27 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
             ArgumentNullException.ThrowIfNull(setlistPlaylistCreatorService, nameof(setlistPlaylistCreatorService));
 
             _setlistPlaylistCreatorService = setlistPlaylistCreatorService;
+
+            _createPlaylistCommand = new AsyncRelayCommand<object>(
+                _ => SelectedSongs.Count != 0,
+                async _ =>
+                {
+                    IsCreatingPlaylist = true;
+                    CreatePlaylistButtonText = "Creating Playlist...";
+
+                    try
+                    {
+                        if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(true))
+                        {
+                            PlaylistCreated?.Invoke(this, EventArgs.Empty);
+                        }
+                    }
+                    finally
+                    {
+                        IsCreatingPlaylist = false;
+                        CreatePlaylistButtonText = "Create Playlist";
+                    }
+                });
         }
 
         /// <summary>
@@ -62,26 +84,7 @@ namespace SetlistPlaylistCreator.Wpf.Playlist
         /// <summary>
         /// Gets a command that creates a playlist based on the selected songs.
         /// </summary>
-        public ICommand CreatePlaylist => new RelayCommand<object>(
-            _ => SelectedSongs.Count != 0 && !IsCreatingPlaylist,
-            async _ =>
-            {
-                IsCreatingPlaylist = true;
-                CreatePlaylistButtonText = "Creating Playlist...";
-
-                try
-                {
-                    if (await _setlistPlaylistCreatorService.CreatePlaylistAsync(_setlistName, SelectedSongs).ConfigureAwait(true))
-                    {
-                        PlaylistCreated?.Invoke(this, EventArgs.Empty);
-                    }
-                }
-                finally
-                {
-                    IsCreatingPlaylist = false;
-                    CreatePlaylistButtonText = "Create Playlist";
-                }
-            });
+        public ICommand CreatePlaylist => _createPlaylistCommand;
 
         /// <summary>
         /// Gets or sets the playlist of songs that have been searched on the streaming platform and selected for the playlist.

@@ -9,7 +9,7 @@ namespace Spotify.Client.HttpClients
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Configurtes and registers the Spotify HTTP clients with the dependency injection container.
+        /// Configures and registers the Spotify HTTP clients with the dependency injection container.
         /// </summary>
         /// <param name="services">The current instance of <see cref="IServiceCollection"/>.</param>
         /// <returns>A configured instance of <see cref="IServiceCollection"/>.</returns>

@@ -41,6 +41,8 @@ namespace SetlistFm.Client
 
             var response = await httpClient.GetAsync($"?artistName={HttpUtility.UrlEncode(artistName)}&p=1", cancellationToken).ConfigureAwait(false);
 
+            response.EnsureSuccessStatusCode();
+
             var rawResponseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
             var result = JsonSerializer.Deserialize<SetlistFmSetlistSearchResult>(rawResponseContent, s_camelCaseJsonSerializerOptions);
