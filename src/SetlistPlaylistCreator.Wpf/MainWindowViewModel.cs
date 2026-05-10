@@ -4,13 +4,14 @@ using SetlistPlaylistCreator.Wpf.Complete;
 using SetlistPlaylistCreator.Wpf.Playlist;
 using SetlistPlaylistCreator.Wpf.SongList;
 using Spotify.Client.Authorization;
+using System.Windows.Input;
 
 namespace SetlistPlaylistCreator.Wpf
 {
     /// <summary>
     /// A view model backing the main window.
     /// </summary>
-    public class MainWindowViewModel
+    public class MainWindowViewModel : ViewModelBase
     {
         private readonly ArtistSearchViewModel _artistSearchViewModel;
         private readonly IAuthorizationCodeStore _authorizationCodeStore;
@@ -18,6 +19,10 @@ namespace SetlistPlaylistCreator.Wpf
         private readonly PlaylistViewModel _playlistViewModel;
         private readonly SongListViewModel _songListViewModel;
         private readonly CompleteViewModel _completeViewModel;
+
+        private ViewModelBase? _previousViewModel;
+        private ViewModelBase? _currentViewModel;
+        private bool _canNavigateBack;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
@@ -55,13 +60,32 @@ namespace SetlistPlaylistCreator.Wpf
             _songListViewModel.SearchSonglist += SongListViewModel_SearchSonglist;
             _playlistViewModel.PlaylistCreated += PlaylistViewModel_PlaylistCreated;
             _completeViewModel.ShutdownRequested += CompleteViewModel_ShutdownRequested;
+
+            BackCommand = new RelayCommand<object>(_ => NavigateBack());
         }
 
         /// <summary>
-        /// An event raised when the data context has changed. The user control displayed in the main
-        /// window is dependent on the view model.
+        /// Gets the current view model being displayed.
         /// </summary>
-        public event EventHandler<DataContextChangedEventArgs>? ContextChanged;
+        public ViewModelBase? CurrentViewModel
+        {
+            get => _currentViewModel;
+            private set => RaiseAndSetIfChanged(ref _currentViewModel, value, nameof(CurrentViewModel));
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the user can navigate back to the previous view model.
+        /// </summary>
+        public bool CanNavigateBack
+        {
+            get => _canNavigateBack;
+            private set => RaiseAndSetIfChanged(ref _canNavigateBack, value, nameof(CanNavigateBack));
+        }
+
+        /// <summary>
+        /// Gets the command to navigate back to the previous view model.
+        /// </summary>
+        public ICommand BackCommand { get; }
 
         /// <summary>
         /// Raises the <see cref="ContextChanged"/> event with the initial view model based on the authorization code state.
@@ -70,22 +94,53 @@ namespace SetlistPlaylistCreator.Wpf
         {
             var authorizationCode = _authorizationCodeStore.RetrieveCode();
 
-            var initialViewModel = string.IsNullOrWhiteSpace(authorizationCode) ?
-                new DataContextChangedEventArgs(_authorizationViewModel) :
-                new DataContextChangedEventArgs(_artistSearchViewModel);
+            ViewModelBase initialViewModel = string.IsNullOrWhiteSpace(authorizationCode) ?
+                _authorizationViewModel :
+                _artistSearchViewModel;
 
-            ContextChanged?.Invoke(this, initialViewModel);
+            NavigateTo(initialViewModel, trackPrevious: false);
+        }
+
+        /// <summary>
+        /// Navigates back to the previous view model.
+        /// </summary>
+        private void NavigateBack()
+        {
+            if (_previousViewModel == null)
+            {
+                return;
+            }
+
+            var previousViewModel = _previousViewModel;
+            _previousViewModel = null;
+            NavigateTo(previousViewModel, trackPrevious: false);
+        }
+
+        /// <summary>
+        /// Navigates to the specified view model.
+        /// </summary>
+        /// <param name="viewModel">The view model to navigate to.</param>
+        /// <param name="trackPrevious">Whether to track the current view model as the previous one.</param>
+        private void NavigateTo(ViewModelBase viewModel, bool trackPrevious = true)
+        {
+            if (trackPrevious)
+            {
+                _previousViewModel = CurrentViewModel;
+            }
+
+            CurrentViewModel = viewModel;
+            CanNavigateBack = _previousViewModel != null;
         }
 
         private void ArtistSearchViewModel_SetlistSelected(object? sender, SetlistSelectedEventArgs e)
         {
             _songListViewModel.Setlist = e.SelectedSetlist;
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_songListViewModel));
+            NavigateTo(_songListViewModel);
         }
 
         private void AuthorizationViewModel_AuthorizationComplete(object? sender, EventArgs e)
         {
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_artistSearchViewModel));
+            NavigateTo(_artistSearchViewModel);
         }
 
         private void CompleteViewModel_ShutdownRequested(object? sender, EventArgs e)
@@ -95,7 +150,7 @@ namespace SetlistPlaylistCreator.Wpf
 
         private void PlaylistViewModel_PlaylistCreated(object? sender, EventArgs e)
         {
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_completeViewModel));
+            NavigateTo(_completeViewModel);
         }
 
         private async void SongListViewModel_SearchSonglist(object? sender, SearchSongListEventArgs e)
@@ -118,7 +173,7 @@ namespace SetlistPlaylistCreator.Wpf
                 _songListViewModel.IsSearching = false;
             }
 
-            ContextChanged?.Invoke(this, new DataContextChangedEventArgs(_playlistViewModel));
+            NavigateTo(_playlistViewModel);
         }
     }
 }

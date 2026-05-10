@@ -10,7 +10,7 @@
         xmlns:complete="clr-namespace:SetlistPlaylistCreator.Wpf.Complete"
         xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance authorization:AuthorizationViewModel, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=False}"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate x:Name="ArtistSearchView" DataType="{x:Type artistSearch:ArtistSearchViewModel}">
@@ -30,6 +30,19 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <ContentControl Content="{Binding}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" 
+                Content="← Back" 
+                Command="{Binding BackCommand}"
+                IsEnabled="{Binding CanNavigateBack}"
+                HorizontalAlignment="Left"
+                Margin="10"
+                Padding="10,5"/>
+
+        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

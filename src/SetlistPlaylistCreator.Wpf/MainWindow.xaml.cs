@@ -23,21 +23,8 @@ namespace SetlistPlaylistCreator.Wpf
         /// <param name="viewModel">The view model to set.</param>
         public void SetMainWindowViewModel(MainWindowViewModel viewModel)
         {
-            if (_viewModel != null)
-            {
-                _viewModel.ContextChanged -= ViewModel_ContextChanged;
-            }
-
             _viewModel = viewModel;
-            _viewModel.ContextChanged += ViewModel_ContextChanged;
-        }
-
-        private void ViewModel_ContextChanged(object? sender, DataContextChangedEventArgs e)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                DataContext = e.NewDataContext;
-            }));
+            DataContext = _viewModel;
         }
     }
 }
