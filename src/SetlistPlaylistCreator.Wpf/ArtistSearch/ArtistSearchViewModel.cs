@@ -69,7 +69,7 @@ namespace SetlistPlaylistCreator.Wpf.ArtistSearch
                 try
                 {
                     var setlists = await _setlistSearch.SearchForSetlistsAsync(ArtistSearchTerm, CancellationToken.None).ConfigureAwait(false);
-                    Setlists = setlists.ToList();
+                    Setlists = setlists.Where(setlist => setlist.Sets.Count > 0).ToList();
                 }
                 finally
                 {

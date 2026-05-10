@@ -83,8 +83,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <WrapPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
-                                            <TextBlock Text="Artist: " FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding ArtistName}" Margin="0,0,8,0"/>
+
                                             <TextBlock Text="Title: " FontWeight="Bold"/>
                                             <TextBlock Text="{Binding Name}" Margin="0,0,8,0"/>
                                             <TextBlock Text="Sets: " FontWeight="Bold"/>
@@ -96,7 +95,7 @@
                                                 Command="{Binding DataContext.SelectSetlist, ElementName=OuterGrid}"
                                                 CommandParameter="{Binding}"
                                                 Style="{StaticResource Button.PrimaryStyle}"
-                                                Margin="0"
+                                                Margin="0,0,20,0"
                                                 VerticalAlignment="Center"/>
                                     </Grid>
                                 </Border>

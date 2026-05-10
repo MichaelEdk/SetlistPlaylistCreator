@@ -3,6 +3,6 @@
     <Thickness x:Key="Spacing.PageCardMargin">40</Thickness>
     <Thickness x:Key="Spacing.PageCardPadding">24</Thickness>
     <Thickness x:Key="Spacing.SectionGap">0,0,0,16</Thickness>
-    <Thickness x:Key="Spacing.ListItemMargin">0,0,0,8</Thickness>
+    <Thickness x:Key="Spacing.ListItemMargin">0</Thickness>
     <Thickness x:Key="Spacing.ListItemPadding">8</Thickness>
 </ResourceDictionary>
