@@ -1,5 +1,7 @@
 ﻿namespace Spotify.Client.Authorization
 {
+    /// <summary>
+    /// The default implementation of <see cref="IAuthorizationCodeUrlBuilder"/>.
     /// </summary>
     public class AuthorizationCodeUrlBuilder
         : IAuthorizationCodeUrlBuilder

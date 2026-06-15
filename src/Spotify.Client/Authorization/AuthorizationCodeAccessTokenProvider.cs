@@ -27,6 +27,10 @@ namespace Spotify.Client.Authorization
             ICodeChallengeStore codeChallengeStore,
             IOptionsMonitor<SpotifyOptions> spotifyOptions)
         {
+            ArgumentNullException.ThrowIfNull(authorizationCodeStore, nameof(authorizationCodeStore));
+            ArgumentNullException.ThrowIfNull(codeChallengeStore, nameof(codeChallengeStore));
+            ArgumentNullException.ThrowIfNull(spotifyOptions, nameof(spotifyOptions));
+
             _authorizationCodeStore = authorizationCodeStore;
             _codeChallengeStore = codeChallengeStore;
             _spotifyOptions = spotifyOptions.CurrentValue;
