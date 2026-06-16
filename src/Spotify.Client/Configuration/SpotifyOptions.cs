@@ -1,4 +1,4 @@
-﻿namespace SetlistPlaylistCreator.WebApi.Configuration
+﻿namespace Spotify.Client.Configuration
 {
     /// <summary>
     /// Configuration options for Spotify.

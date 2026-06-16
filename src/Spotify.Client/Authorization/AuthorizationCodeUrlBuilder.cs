@@ -1,4 +1,7 @@
-﻿namespace Spotify.Client.Authorization
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
+
+namespace Spotify.Client.Authorization
 {
     /// <summary>
     /// The default implementation of <see cref="IAuthorizationCodeUrlBuilder"/>.
@@ -42,7 +45,17 @@
 
             _codeChallengeStore.StoreChallenge(codeVerifier);
 
-            return new Uri($"{AuthEndpoint}?response_type=code&client_id={clientId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString(Scopes)}&code_challenge={Uri.EscapeDataString(codeChallenge)}&code_challenge_method={CodeChallengeMethod}");
+            var uriWithQueryString = QueryHelpers.AddQueryString(AuthEndpoint, new List<KeyValuePair<string, StringValues>>
+            {
+                { new KeyValuePair<string, StringValues>("response_type", "code") },
+                { new KeyValuePair<string, StringValues>("client_id", clientId) },
+                { new KeyValuePair<string, StringValues>("redirect_uri", redirectUri) },
+                { new KeyValuePair<string, StringValues>("scope", Scopes) },
+                { new KeyValuePair<string, StringValues>("code_challenge", codeChallenge) },
+                { new KeyValuePair<string, StringValues>("code_challenge_method", CodeChallengeMethod) },
+            });
+
+            return new Uri(uriWithQueryString);
         }
     }
 }

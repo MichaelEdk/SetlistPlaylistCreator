@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using SetlistPlaylistCreator.WebApi.Configuration;
+using Spotify.Client.Configuration;
 
 namespace Spotify.Client.Authorization
 {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
-using SetlistPlaylistCreator.WebApi.Configuration;
 using SetlistPlaylistCreator.Wpf.Authorization;
 using Spotify.Client.Authorization;
+using Spotify.Client.Configuration;
 
 namespace SetlistPlaylistCreator.Wpf.UnitTests.Authorization
 {

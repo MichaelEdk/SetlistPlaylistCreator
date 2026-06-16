@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using SetlistPlaylistCreator.WebApi.Configuration;
 using Spotify.Client.Authorization;
+using Spotify.Client.Configuration;
 
 namespace SetlistPlaylistCreator.StreamingPlatform.Spotify
 {

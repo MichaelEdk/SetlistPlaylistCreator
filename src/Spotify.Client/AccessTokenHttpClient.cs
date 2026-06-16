@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SetlistPlaylistCreator.WebApi.Configuration;
+using Spotify.Client.Configuration;
 
 namespace Spotify.Client
 {
