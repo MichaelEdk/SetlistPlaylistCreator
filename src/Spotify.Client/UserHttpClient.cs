@@ -30,14 +30,12 @@ namespace Spotify.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                // TODO: Custom exception type and better message.
-                throw new Exception("Failed to get access token");
+                throw new SpotifyApiException($"Failed to get user profile. Http status code: [{response.StatusCode}].");
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            // TODO: Custom exception type and better message.
-            return JsonConvert.DeserializeObject<User>(json) ?? throw new Exception($"Result object is null. Json payload: '{json}'");
+            return JsonConvert.DeserializeObject<User>(json) ?? throw new SpotifyApiException($"Result object is null. Json payload: '{json}'");
         }
     }
 }
