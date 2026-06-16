@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SetlistPlaylistCreator.StreamingPlatform\SetlistPlaylistCreator.StreamingPlatform.csproj" />
+    <ProjectReference Include="..\Spotify.Client\Spotify.Client.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,9 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTemplate x:Key="Template.SectionHeader" TargetType="ContentControl">
+        <StackPanel>
+            <TextBlock Style="{StaticResource TextBlock.PageTitleStyle}" Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+            <ContentPresenter/>
+        </StackPanel>
+    </ControlTemplate>
+</ResourceDictionary>

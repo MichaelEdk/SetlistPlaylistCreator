@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="SetlistPlaylistCreator.Wpf.Authorization.AuthorizationUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SetlistPlaylistCreator.Wpf.Authorization"
+             xmlns:windows="clr-namespace:SetlistPlaylistCreator.Wpf.Windows"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:AuthorizationViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <windows:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <ContentControl>
+        <ContentControl.Style>
+            <Style TargetType="ContentControl" BasedOn="{StaticResource ContentControl.PageShellStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsAuthorizing}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="To continue, authorize with your Spotify account."
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       Margin="0,0,0,24"
+                       HorizontalAlignment="Center"/>
+
+            <Button Grid.Row="1"
+                    Content="{Binding AuthorizationButtonText}"
+                    Command="{Binding Authorize}"
+                    Style="{StaticResource Button.PrimaryCenteredStyle}"
+                    MinWidth="180"/>
+        </Grid>
+    </ContentControl>
+</UserControl>

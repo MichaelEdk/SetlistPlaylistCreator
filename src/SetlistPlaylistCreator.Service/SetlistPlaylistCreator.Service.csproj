@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SetlistPlaylistCreator.Domain\SetlistPlaylistCreator.Domain.csproj" />
+    <ProjectReference Include="..\SetlistPlaylistCreator.SetlistPlatform\SetlistPlaylistCreator.SetlistPlatform.csproj" />
+    <ProjectReference Include="..\SetlistPlaylistCreator.StreamingPlatform\SetlistPlaylistCreator.StreamingPlatform.csproj" />
+  </ItemGroup>
+
+</Project>
