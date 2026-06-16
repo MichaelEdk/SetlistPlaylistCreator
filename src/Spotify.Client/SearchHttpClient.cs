@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
 namespace Spotify.Client
@@ -36,7 +37,15 @@ namespace Spotify.Client
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
-            var response = await httpClient.GetAsync($"search?q={songTitle}%20track:{songTitle}%20artist:{artistName}&type=track").ConfigureAwait(false);
+            var queryParams = new Dictionary<string, string?>
+            {
+                ["q"] = $"{songTitle} track:{songTitle} artist:{artistName}",
+                ["type"] = "track"
+            };
+
+            var queryString = QueryHelpers.AddQueryString(string.Empty, queryParams);
+
+            var response = await httpClient.GetAsync($"search{queryString}").ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
