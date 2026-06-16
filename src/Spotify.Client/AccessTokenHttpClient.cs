@@ -21,6 +21,7 @@ namespace Spotify.Client
         public AccessTokenHttpClient(IOptions<SpotifyOptions> spotifyOptions, IHttpClientFactory httpClientFactory)
         {
             ArgumentNullException.ThrowIfNull(spotifyOptions, nameof(spotifyOptions));
+            ArgumentNullException.ThrowIfNull(httpClientFactory, nameof(httpClientFactory));
 
             _spotifyOptions = spotifyOptions.Value;
             _httpClientFactory = httpClientFactory;

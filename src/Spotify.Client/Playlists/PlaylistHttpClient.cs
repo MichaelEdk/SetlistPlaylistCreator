@@ -11,6 +11,8 @@ namespace Spotify.Client.Playlists
     public class PlaylistHttpClient
         : IPlaylistHttpClient
     {
+        private static readonly JsonSerializerOptions s_camelCaseJsonSerializerOptions = new(JsonSerializerDefaults.Web);
+
         private readonly IAccessTokenProvider _accessTokenProvider;
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -29,7 +31,7 @@ namespace Spotify.Client.Playlists
         }
 
         /// <inheritdoc />
-        /// <exception cref="Exception">Thrown when the HTTP request is unsuccessful.</exception>
+        /// <exception cref="SpotifyApiException">Thrown when the HTTP request is unsuccessful.</exception>
         public async Task AddSongsToPlaylist(string playlistId, IEnumerable<string> songUris)
         {
             var token = await _accessTokenProvider.GetTokenAsync().ConfigureAwait(false);
@@ -43,17 +45,17 @@ namespace Spotify.Client.Playlists
                 uris = songUris
             };
 
-            var httpResponse = await httpClient.PostAsJsonAsync($"playlists/{playlistId}/tracks", payload);
+            using var httpResponse = await httpClient.PostAsJsonAsync($"playlists/{playlistId}/tracks", payload);
 
             if (!httpResponse.IsSuccessStatusCode)
             {
-                // TODO: Custom exception type and better message.
-                throw new Exception("Failed to add songs to playlist");
+                var json = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                throw new SpotifyApiException($"Failed to add songs to playlist. Http status code: [{httpResponse.StatusCode}]. Json payload: '{json}'");
             }
         }
 
         /// <inheritdoc />
-        /// <exception cref="Exception">Thrown when the HTTP request is unsuccessful.</exception>
+        /// <exception cref="SpotifyApiException">Thrown when the HTTP request is unsuccessful.</exception>
         public async Task<string> CreatePlaylistAsync(string userId, string playlistName)
         {
             var token = await _accessTokenProvider.GetTokenAsync().ConfigureAwait(false);
@@ -67,19 +69,18 @@ namespace Spotify.Client.Playlists
                 Name = playlistName
             };
 
-            var httpResponse = await httpClient.PostAsJsonAsync($"users/{userId}/playlists", playlist).ConfigureAwait(false);
+            using var httpResponse = await httpClient.PostAsJsonAsync($"users/{userId}/playlists", playlist).ConfigureAwait(false);
 
             await using var json = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             if (!httpResponse.IsSuccessStatusCode)
             {
-                // TODO: Custom exception type and better message.
-                throw new Exception($"Failed to create playlist. Response {json}");
+                throw new SpotifyApiException($"Failed to create playlist. Http status code: [{httpResponse.StatusCode}]. Json payload: '{json}'");
             }
 
-            var response = JsonSerializer.Deserialize<CreatePlaylistResponse>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+            var response = JsonSerializer.Deserialize<CreatePlaylistResponse>(json, s_camelCaseJsonSerializerOptions) ?? throw new SpotifyApiException($"Result object is null. Json payload: '{json}'");
 
-            return response?.Id ?? string.Empty;
+            return response.Id;
         }
 
         private class CreatePlaylistRequest

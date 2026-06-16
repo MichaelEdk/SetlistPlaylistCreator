@@ -28,7 +28,7 @@ namespace Spotify.Client
         }
 
         /// <inheritdoc />
-        /// <exception cref="Exception">Thrown if there was an error with the HTTP request.</exception>
+        /// <exception cref="SpotifyApiException">Thrown if there was an error with the HTTP request.</exception>
         public async Task<SearchResult> SearchSongsAsync(string songTitle, string artistName)
         {
             var token = await _accessTokenHttpClient.GetAccessTokenAsync().ConfigureAwait(false);
